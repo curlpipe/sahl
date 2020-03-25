@@ -14,7 +14,7 @@ In HTML:
 <h1>Example Title</h1>
 ```
 In SAHL:
-```Ruby
+```
 h1 Example Title
 ```
 
@@ -24,6 +24,6 @@ In HTML:
 <h1 style="color: #0000ff; float: left;">Example Title</h1>
 ```
 In SAHL:
-```Ruby
+```
 h1(style: "color: #0000ff; float: left;") Example Title
 ```

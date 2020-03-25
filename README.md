@@ -8,8 +8,22 @@ Let's be honest, nobody really likes HTML. For us it seemed to be a massive burd
 
 ## Examples of HTML vs SAHL
 
-```<h1>Example Title</h1>```
-```h1 "Example Title"```
+### A Basic Title
+In HTML:
+```HTML
+<h1>Example Title</h1>
+```
+In SAHL:
+```Ruby
+h1 "Example Title"
+```
 
-```<h1 style="color: #0000ff; float: left;">Example Title</h1>```
-```h1(style: "color: #0000ff; float: left;") "Example Title"```
+### A Title with Styling
+In HTML:
+```HTML
+<h1 style="color: #0000ff; float: left;">Example Title</h1>
+```
+In SAHL:
+```Ruby
+h1(style: "color: #0000ff; float: left;") "Example Title"
+```

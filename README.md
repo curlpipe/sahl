@@ -15,7 +15,7 @@ In HTML:
 ```
 In SAHL:
 ```Ruby
-h1 "Example Title"
+h1 Example Title
 ```
 
 ### A Title with Styling
@@ -25,5 +25,5 @@ In HTML:
 ```
 In SAHL:
 ```Ruby
-h1(style: "color: #0000ff; float: left;") "Example Title"
+h1(style: "color: #0000ff; float: left;") Example Title
 ```

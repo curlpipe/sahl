@@ -8,3 +8,8 @@ Let's be honest, nobody really likes HTML. For us it seemed to be a massive burd
 
 ## Examples of HTML vs SAHL
 
+```<h1>Example Title</h1>```
+```h1 "Example Title"```
+
+```<h1 style="color: #0000ff; float: left;">Example Title</h1>```
+```h1(style: "color: #0000ff; float: left;") "Example Title"```

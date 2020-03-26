@@ -35,7 +35,9 @@ class Parser
   end
   def export
     # Export to html
-    @multiline ? @html = "<#{tag}>\n    " + contents + "\n</#{tag}>" : @html = "<#{tag}>" + contents + "</#{tag}>"
+    @multiline ? @html = "<#{tag}>\n    #{contents}\n</#{tag}>" : @html = "<#{tag}>#{contents}</#{tag}>"
+    @html.gsub!("!sahlbreak!", "\n    ")
+    return @html
   end
 end
 
@@ -44,8 +46,6 @@ def read(file)
   f = File.new(file, "r").readlines
   # Strip blank lines
   f.map!(&:strip).reject!{ |s| s.empty? }
-  # Strip newlines
-  f.map! { |l| l.delete("\n") }
   # Splice broken up tags
   result = []
   sub = []
@@ -55,18 +55,19 @@ def read(file)
       sub << x
       $mltable[x] = toggle
       toggle = false
+      sub[-2].slice! "!sahlbreak!"
       result << sub.join
       $mltable[sub.join] = true
       sub = []
     elsif !x.include? "{"
-      toggle ? sub << x : result << x
+      toggle ? sub << x+"!sahlbreak!" : result << x
       $mltable[x] = toggle
     elsif !x.include? "}"
       sub << x
       toggle = true
       $mltable[x] = toggle
     else
-      toggle ? sub << x : result << x
+      toggle ? sub << x: result << x
       $mltable[x] = toggle
     end
   end

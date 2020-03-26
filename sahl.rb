@@ -74,20 +74,23 @@ def read(file)
   return result
 end
 
-def write
+def write(toWrite)
   # Write resultant html to a file
-  htmlName = ARGV[0].split(".")[1..-1] + ".html"
-  File.open(htmlName, "w") { |f| f.write("this feature aint workin yet boss") }
+  htmlName = ARGV[0][0...ARGV[0].length-5] + ".html"
+  File.open(htmlName, "w") { |f| f.write(toWrite) }
 end
 
 def convert(input)
+  output = ""
   # Convert a line of the file into html
   input.each do |line|
     parser = Parser.new(line)
-    puts parser.export
+    output << parser.export + "\n"
   end
+  return output
 end
 
 # Take file argument
-convert(read(ARGV[0]))
+puts convert(read(ARGV[0]))
+write(convert(read(ARGV[0])))
 #p read(ARGV[0])

@@ -7,3 +7,5 @@ p {
 }
 h6 { I am convinced
     this will not work }
+
+invalidtag This should produce and error

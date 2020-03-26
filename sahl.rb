@@ -5,7 +5,7 @@ Multiline tags
 =end
 
 class Parser
-  attr_reader :multiline
+  attr_reader :multiline, :tag
   def initialize(sahl)
     # Load up the raw data and standardize
     @sahl = sahl
@@ -38,6 +38,9 @@ class Parser
     @multiline ? @html = "<#{tag}>\n    #{contents}\n</#{tag}>" : @html = "<#{tag}>#{contents}</#{tag}>"
     @html.gsub!("!sahlbreak!", "\n    ")
     return @html
+  end
+  def validTag
+    return true
   end
 end
 
@@ -85,7 +88,7 @@ def convert(input)
   # Convert a line of the file into html
   input.each do |line|
     parser = Parser.new(line)
-    output << parser.export + "\n"
+    parser.validTag ? output << parser.export + "\n" : abort("ERROR: Inavlid tag: #{parser.tag}")
   end
   return output
 end

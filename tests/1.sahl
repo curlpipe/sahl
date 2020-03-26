@@ -1,0 +1,5 @@
+h1(class: "main", style: "font-weight: bold;") {Welcome to my website}
+p{Hello there}
+br
+p{This is a new line}
+

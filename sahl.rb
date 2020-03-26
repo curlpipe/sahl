@@ -4,7 +4,7 @@
 Multiline tags
 =end
 
-class Tag
+class Parser
   def initialize(sahl)
     # Load up the raw data and standardize
     @sahl = sahl
@@ -14,7 +14,7 @@ class Tag
       @sahl.sub!(@tag+" {", @tag+"{")
     end
     # Magic brackets
-    if !@sahl.include? @tag+"{" 
+    if !@sahl.include? @tag+"{"
       @sahl.sub!(@tag+" ", @tag+"{")
       @sahl << "}"
     end
@@ -36,7 +36,7 @@ def read(file)
   f = File.new(file, "r").readlines
   f.map! do |line|
     line.delete("\n")
-  end 
+  end
   return f
 end
 
@@ -49,11 +49,10 @@ def convert(input)
   input.each do |line|
     # Make a copy of original
     ori = line[0..-1]
-    parser = Tag.new(line)
+    parser = Parser.new(line)
     puts "#{ori} -> #{parser.export}"
   end
 end
 
 # Take file argument
 puts convert(read(ARGV[0]))
-

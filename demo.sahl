@@ -1,3 +1,7 @@
 h1{Hello world}
 h6 {Hello luke}
 p Hello everyone
+nav {
+    Hello 
+}
+

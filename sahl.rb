@@ -42,6 +42,8 @@ end
 
 def write
   # Write resultant html to a file
+  #htmlName = ARGV[0][0...ARGV[0].length-4] + "html"
+  #File.open(htmlName, "w") { |f| f.write("this feature aint workin yet boss") }
 end
 
 def convert(input)
@@ -56,7 +58,3 @@ end
 
 # Take file argument
 puts convert(read(ARGV[0]))
-
-#Write to [file name].html
-htmlName = ARGV[0][0...ARGV[0].length-4] + "html"
-#File.open(htmlName, "w") { |f| f.write(WHATEVER FUNCTION DOES THE THING) }

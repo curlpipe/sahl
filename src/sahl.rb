@@ -46,7 +46,7 @@ def convert(input)
   # Convert a line of the file into html
   input.each do |line|
     parser = Parser.new(line)
-    parser.validTag ? output << parser.export + "\n" : abort("ERROR: Inavlid tag: #{parser.tag}")
+    parser.validTag? ? output << parser.export + "\n" : abort("ERROR: Invalid tag: #{parser.tag}")
   end
   return output
 end

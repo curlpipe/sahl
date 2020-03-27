@@ -1,6 +1,7 @@
 # Sahl tag parser
 
 require 'json'
+validTags = JSON.parse(open("assets/validTags.json").read)["validTags"]
 
 class Parser
   attr_reader :multiline, :tag
@@ -37,9 +38,11 @@ class Parser
     @html.gsub!("!sahlbreak!", "\n  ")
     return @html
   end
-  def validTag
-	#validtags = JSON.parse(open("assets/validTags.json").read)
-
-    return true
+  def validTag?
+		if validTags.include? @tag
+			return true
+		else
+			return false
+		end
   end
 end

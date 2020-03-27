@@ -41,6 +41,6 @@ class Parser
     return @html
   end
   def validTag?
-		@validTags.include? @tag
+    @validTags.include? @tag
   end
 end

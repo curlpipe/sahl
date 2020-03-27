@@ -4,6 +4,8 @@
 Multiline tags
 =end
 
+require "json"
+
 class Parser
   attr_reader :multiline, :tag
   def initialize(sahl)
@@ -40,6 +42,8 @@ class Parser
     return @html
   end
   def validTag
+	#validtags = JSON.parse(open("assets/validtags/validtags.json").read)
+	
     return true
   end
 end

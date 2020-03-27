@@ -40,6 +40,5 @@ class Parser
   end
   def validTag?
 		validTags.include? @tag
-		end
   end
 end

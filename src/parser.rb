@@ -6,8 +6,9 @@ class Parser
   attr_reader :multiline, :tag
   def initialize(sahl)
     # get list of valid html tags
-    @validTags = JSON.parse(open("assets/validTags.json").read)["validTags"]
-    @validTags.close
+    tagsFile = open("assets/validTags.json")
+    @validTags = JSON.parse(tagsFile.read)["validTags"]
+    tagsFile.close
     # Load up the raw data and standardize
     @sahl = sahl
     @multiline = $mltable[@sahl]
@@ -40,6 +41,7 @@ class Parser
     @html.gsub!("!sahlbreak!", "\n  ")
     return @html
   end
+    # Check whether tag exists in HTML
   def validTag?
     @validTags.include? @tag
   end

@@ -1,7 +1,6 @@
 # Ruby compiler for sahl to html
 
 require './parser.rb'
-require "json"
 
 def read(file)
   $mltable = {}

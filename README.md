@@ -85,7 +85,7 @@ To use it in any other SAHL file in the same directory, do this in the target SA
 ```
 @nav.sahl
 ```
-And all the code in nav.sahl will be placed in the position of the @
+And all the code in nav.sahl will be placed in the position of the @.
 
 ### Expanding Your Website Is No Longer Verbose To Set Up
 #### Allows you to import CSS frameworks, JS modules and fonts with ease

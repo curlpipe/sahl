@@ -1,4 +1,5 @@
 # Sahl tag parser
+require "json"
 
 class Parser
   attr_reader :multiline, :tag
@@ -37,7 +38,7 @@ class Parser
   end
   def validTag
 	#validtags = JSON.parse(open("assets/validTags.json").read)
-	
+
     return true
   end
 end

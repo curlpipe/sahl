@@ -1,5 +1,6 @@
 # Sahl tag parser
-require "json"
+
+require 'json'
 
 class Parser
   attr_reader :multiline, :tag
@@ -32,8 +33,8 @@ class Parser
   end
   def export
     # Export to html
-    @multiline ? @html = "<#{tag}>\n    #{contents}\n</#{tag}>" : @html = "<#{tag}>#{contents}</#{tag}>"
-    @html.gsub!("!sahlbreak!", "\n    ")
+    @multiline ? @html = "<#{tag}>\n  #{contents}\n</#{tag}>" : @html = "<#{tag}>#{contents}</#{tag}>"
+    @html.gsub!("!sahlbreak!", "\n  ")
     return @html
   end
   def validTag

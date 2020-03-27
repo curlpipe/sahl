@@ -42,7 +42,7 @@ class Parser
     return @html
   end
   def validTag
-	#validtags = JSON.parse(open("assets/validtags/validtags.json").read)
+	#validtags = JSON.parse(open("assets/validTags.json").read)
 	
     return true
   end

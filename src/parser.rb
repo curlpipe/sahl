@@ -39,10 +39,7 @@ class Parser
     return @html
   end
   def validTag?
-		if validTags.include? @tag
-			return true
-		else
-			return false
+		validTags.include? @tag
 		end
   end
 end

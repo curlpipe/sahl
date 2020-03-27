@@ -1,0 +1,7 @@
+- [ ] Add support for nesting
+- [ ] Add support for attributes
+- [ ] Create tests
+- [ ] Create a templating system
+- [ ] Add shorthands for premade stylesheets
+- [ ] Add invalid tag warning
+

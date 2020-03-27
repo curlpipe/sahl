@@ -1,11 +1,13 @@
 # Sahl tag parser
 
 require 'json'
-validTags = JSON.parse(open("assets/validTags.json").read)["validTags"]
 
 class Parser
   attr_reader :multiline, :tag
   def initialize(sahl)
+    # get list of valid html tags
+    @validTags = JSON.parse(open("assets/validTags.json").read)["validTags"]
+    @validTags.close
     # Load up the raw data and standardize
     @sahl = sahl
     @multiline = $mltable[@sahl]
@@ -39,6 +41,6 @@ class Parser
     return @html
   end
   def validTag?
-		validTags.include? @tag
+		@validTags.include? @tag
   end
 end

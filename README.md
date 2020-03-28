@@ -51,7 +51,7 @@ In HTML:
 ```
 In SAHL:
 ```
-.p This text is .b { bold }.
+.p This text is .b {bold}.
 ```
 
 ### Nested Tags + Multi-lines
@@ -65,7 +65,7 @@ In HTML:
 In SAHL:
 ```
 .div {
-  .p Here we have an .b { image }:
+  .p Here we have an .b {image}:
   .img(src: "...")
 }
 ```

@@ -6,7 +6,7 @@
 
 Let's be honest, nobody really likes HTML. For us it seemed to be a massive burden when it came to web development so we decided to create a language that allows one to glide through web development without tearing their hair out.
 
-## Examples of HTML vs SAHL
+## Examples Of HTML vs SAHL
 
 ### A Basic Title
 In HTML:
@@ -15,7 +15,7 @@ In HTML:
 ```
 In SAHL:
 ```
-h1 Example Title
+.h1 Example Title
 ```
 
 ### A Title With Styling
@@ -25,7 +25,7 @@ In HTML:
 ```
 In SAHL:
 ```
-h1(style: "color: #0000ff; float: left;") Example Title
+.h1(style: "color: #0000ff; float: left;") Example Title
 ```
 
 ### Multi-line Elements
@@ -38,7 +38,7 @@ In HTML:
 ```
 In SAHL:
 ```
-p {
+.p {
   This element is on
   multiple lines.
 }
@@ -51,7 +51,7 @@ In HTML:
 ```
 In SAHL:
 ```
-p This text is [b bold].
+.p This text is .b { bold }.
 ```
 
 ### Nested Tags + Multi-lines
@@ -64,9 +64,9 @@ In HTML:
 ```
 In SAHL:
 ```
-div {
-  p Here we have an [b image]:
-  img(src: "...")
+.div {
+  .p Here we have an .b { image }:
+  .img(src: "...")
 }
 ```
 
@@ -77,7 +77,7 @@ This means that when you update your templates, the entire SAHL project updates 
 
 Lets say you write some navbar code in `nav.sahl`.
 ```
-nav {
+.nav {
     // navbar code here
 }
 ```
@@ -99,5 +99,5 @@ In SAHL:
 ```
 @bootstrap
 @opensans
-h1 Hello World
+.h1 Hello World
 ```

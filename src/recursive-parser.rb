@@ -5,16 +5,16 @@ class Parser
   def initialize(string)
     @string = string
     # Regex to get an array of every tag in the string
-    @tags = string.scan(/\s*\.(\w*)\{/).map!(&:first)
+    @tags = string.scan(/\s*\.(\w*)\s*\{/).map!(&:first)
   end
   def [](x)
     tag = getTag(x)
-    return tag.match(/\.\w*\{(.*)\}$/)[1].to_s
+    return tag.match(/\.\w*\s*\{(.*)\}$/)[1].to_s
   end
   def getTag(x)
     # Get a whole tag with brackets and name
     # Create a substring from where the tag starts to the end
-    str = @string[@string.index("."+x+"{")..]
+    str = @string[@string.index(@string.match(/(\.#{x}\s*\{)/).to_s)..]
     controller = false
     c = 0
     contents = []
@@ -39,7 +39,7 @@ class Parser
   def height(tag)
     # Get the height of a specified tag
     # Create a substring to where the tag starts
-    str = @string[..@string.index(tag+"{")]
+    str = @string[..@string.index(@string.match(/(\.#{tag}\s*\{)/).to_s)]
     c = 0
     # Use a counter to count the brackets
     str.chars.each do |b|

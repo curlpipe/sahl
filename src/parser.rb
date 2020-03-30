@@ -1,5 +1,4 @@
 # Parser that handles nested brackets
-
 class AttributeParser
   attr_reader :raw
   def initialize(string)
@@ -48,7 +47,7 @@ class Parser
   def getTag(x)
     # Get a whole tag with brackets and name
     # Create a substring from where the tag starts to the end
-    str = @string[@string.index(@string.match(/(\.#{x}\s*(\{|\[))/).to_s, @tags.count(x))..]
+    str = @string[@string.index(@string.match(/(\.#{x}\s*(\{|\[))/).to_s, @tags.count(x))..-1]
     controller = false
     c = 0
     contents = []
@@ -73,7 +72,9 @@ class Parser
   def height(tag)
     # Get the height of a specified tag
     # Create a substring to where the tag starts
-    str = @string[..@string.index(@string.match(/(\.#{tag}\s*(|\[.*\])\s*\{)/).to_s, @tags.count(tag))]
+    match = @string.index(@string.match(/(\.#{tag}\s*(|\[.*\])\s*\{)/).to_s, @tags.count(tag))
+    match = -1 if match.nil?
+    str = @string[0..match]
     c = 0
     # Use a counter to count the brackets
     str.chars.each do |b|

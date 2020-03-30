@@ -1,6 +1,5 @@
 require_relative 'parser.rb'
 require_relative 'read.rb'
-require 'pry'
 
 class Array 
   def chuck(x)
@@ -13,7 +12,7 @@ def isBlank?(x)
 end
 
 def convert(tag, attr = nil)
-  type = tag.match(/^\.(\w*)/).to_s[1..]
+  type = tag.match(/^\.(\w*)/).to_s[1..-1]
   contents = tag.match(/{(.*)}\s*$/)
   return "" if contents == nil
   contents = contents[1].to_s.strip
@@ -27,7 +26,7 @@ def convertLine(line)
   loop do
     peak = parser.getPeak
     nl = convert(peak[1], attr = AttributeParser.new(peak[1]))
-    type = peak[1].match(/^\.(\w*)/).to_s[1..]
+    type = peak[1].match(/^\.(\w*)/).to_s[1..-1]
     parser.tags.chuck type
     parser.string.gsub!(peak[1], nl)
     break if peak[0] == 0
@@ -39,10 +38,7 @@ end
 
 
 file = "#{Dir.pwd}/#{ARGV[0]}"
-#file = "demo.sahl"
 data = read(file)
-
-#binding.pry
 
 result = []
 print "Parsing blocks: "

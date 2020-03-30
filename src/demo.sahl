@@ -1,11 +1,28 @@
-h1 This is a heading
-h3 with all the syntax abstracted, there is practically nothing here!
-p {
-    This element
-    is on multiple lines
-    wow, isn't this incredible!
-}
-h6 { I am convinced
-    this will not work }
+.h1{This is a heading}
 
-invalidtag This should produce and error
+.h3 {With all the syntax extracted}
+
+.invalidtag {This should produce a warning}
+
+.h6{I am convinced 
+    this will work}
+
+.ul {
+  .li[class:"test", style: "color: red;"] {.b{Home}}
+  .li[class :"test1"]{Contact}
+  .li [class: "test2"] {About}
+  .li [class : "test3"]{Help}
+}
+
+.p {
+  This .b{element}
+  is on multiple lines
+  wow, isn't this incredible!
+  .b{This .i{is} AMAZING!!!}
+}
+
+.div {
+  .div {
+    Hello world
+  }
+}

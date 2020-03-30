@@ -25,7 +25,7 @@ In HTML:
 ```
 In SAHL:
 ```
-.h1(style: "color: #0000ff; float: left;") Example Title
+.h1[style: "color: #0000ff; float: left;"] Example Title
 ```
 
 ### Multi-line Elements
@@ -66,7 +66,7 @@ In SAHL:
 ```
 .div {
   .p Here we have an .b {image}:
-  .img(src: "...")
+  .img[src: "...", alt: "image"]
 }
 ```
 

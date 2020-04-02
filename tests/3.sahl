@@ -1,0 +1,20 @@
+.ul {
+  .li[class:"test", style: "color: red;"] {.b{Home}}
+  .li[class :"test1"]{Contact}
+  .li [class: "test2"] {About}
+  .li [class : "test3"]{Help}
+}
+
+.p {
+  This .b{element}
+  is on multiple lines
+  wow, isn't this incredible!
+  .b{This .i{is} AMAZING!!!}
+}
+
+.div {
+  .div {
+    Hello world
+  }
+}
+

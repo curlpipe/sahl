@@ -1,7 +1,8 @@
-- [ ] Add support for nesting
-- [ ] Add support for attributes
-- [ ] Create tests
+- [ ] Add curly bracket abstraction
+- [ ] Add invalid tag warning
 - [ ] Create a templating system
 - [ ] Add shorthands for premade stylesheets
-- [ ] Add invalid tag warning
+- [X] Add support for nesting
+- [X] Add support for attributes
+- [X] Create tests
 

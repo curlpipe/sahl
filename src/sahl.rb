@@ -36,20 +36,22 @@ def convertLine(line)
   return parser.string
 end
 
+def doWork
+  file = "#{Dir.pwd}/#{ARGV[0]}"
+  data = read(file)
 
-file = "#{Dir.pwd}/#{ARGV[0]}"
-data = read(file)
+  result = []
+  print "Parsing blocks: "
+  data.each do |line|
+    result.push convertLine(line)
+    print "."
+  end
 
-result = []
-print "Parsing blocks: "
-data.each do |line|
-  result.push convertLine(line)
-  print "."
+  new = file.sub(/(\.\w*)$/, ".html")
+  f = File.open(new, "w")
+  f.seek(0)
+  f.write(result.join "\n")
+  puts "\nWritten to #{new}"
 end
 
-new = file.sub(/(\.\w*)$/, ".html")
-f = File.open(new, "w")
-f.seek(0)
-f.write(result.join "\n")
-puts "\nWritten to #{new}"
-
+doWork if __FILE__ == $0

@@ -47,7 +47,9 @@ class Parser
   def getTag(x)
     # Get a whole tag with brackets and name
     # Create a substring from where the tag starts to the end
-    str = @string[@string.index(@string.match(/(\.#{x}\s*(\{|\[))/).to_s, @tags.count(x))..-1]
+    match = @string.index(@string.match(/(\.#{x}\s*(\{|\[))/).to_s, @tags.count(x))
+    match = 0 if match.nil?
+    str = @string[match..-1]
     controller = false
     c = 0
     contents = []

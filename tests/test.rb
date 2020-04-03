@@ -4,6 +4,18 @@ require_relative '../src/read.rb'
 require_relative '../src/sahl.rb'
 
 class TestReader < Test::Unit::TestCase
+  def test_abstraction
+    assert absFilter(".code Hello world") == ".code {Hello world}"
+    assert absFilter(".h1 Hello .i{world}") == ".h1 {Hello .i{world}}"
+    assert absFilter(".p .b{Hello} world") == ".p {.b{Hello} world}"
+    assert absFilter(".p .b{Hello world}") == ".p {.b{Hello world}}"
+    assert absFilter(".p[class: \"test\"] .b{Hello world}") == ".p[class: \"test\"] {.b{Hello world}}"
+    assert absFilter(".code {Hello world}") == ".code {Hello world}"
+    assert absFilter(".h1 {Hello .i{world}}") == ".h1 {Hello .i{world}}"
+    assert absFilter(".p {.b{Hello} world}") == ".p {.b{Hello} world}"
+    assert absFilter(".p {.b{Hello world}}") == ".p {.b{Hello world}}"
+    assert absFilter(".p[class: \"test\"] {.b{Hello world}}") == ".p[class: \"test\"] {.b{Hello world}}"
+  end
   def test_bracket_imbalance
     testhash = {"{}{}"=>true, "{}{"=>false,
                 "{{}{}{}}"=>true, "{}{{}{}"=>false,
@@ -100,6 +112,7 @@ class TestSahl < Test::Unit::TestCase
   end
   def test_convert_line
     assert convertLine("") == ""
+    assert convertLine(".p Hello world") == "<p>Hello world</p>"
     assert convertLine(read("1.sahl")[0]) == "<h1>Hello world</h1>"
     assert convertLine(read("2.sahl")[0]) == "<h1><b>Hello world</b></h1>"
     assert convertLine(read("3.sahl")[0]) == "<ul>\n  <li class = \"test\" style = \"color: red;\"><b>Home</b></li>\n  <li class = \"test1\">Contact</li>\n  <li class = \"test2\">About</li>\n  <li class = \"test3\">Help</li>\n</ul>"

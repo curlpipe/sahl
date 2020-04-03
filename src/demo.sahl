@@ -1,6 +1,6 @@
 .h1{This is a heading}
 
-.h3 {With all the syntax extracted}
+.h3 With all the syntax abstracted
 
 .invalidtag {This should produce a warning}
 

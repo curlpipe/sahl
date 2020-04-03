@@ -22,6 +22,7 @@ end
 
 def convertLine(line)
   return "" if isBlank? line
+  line = absFilter(line)
   parser = Parser.new(line)
   loop do
     peak = parser.getPeak

@@ -1,6 +1,22 @@
 # This function should return all the tags on the different lines in a format that can be parsed
 # Basically the standardisation of all tags
 
+def absFilter(line)
+  line.strip!
+  tag = line.match(/^\s*\.(\w*)/).to_s
+  has_attr = !line.match(/#{tag}\s*\[/).nil?
+  attributes = (has_attr ? line.match(/(#{tag})\s*\[(.*?)\]/)[0].to_s : " ")
+  if has_attr
+    contents = line.sub(/#{tag}\s*\[.*?\]\s*/, "")
+  else
+    contents = line.sub(/#{tag}\s*/, "")
+  end
+  has_brackets = contents[0] == "{" && contents[-1] == "}"
+  contents = "{#{contents}}" if !has_brackets
+  return "#{tag}#{attributes}#{contents}" if !has_attr
+  return "#{attributes} #{contents}"
+end
+
 def bracketsBalanced?(text)
   c = 0
   text.chars.each do |x|
@@ -32,4 +48,3 @@ def read(file)
   }
   return result
 end
-

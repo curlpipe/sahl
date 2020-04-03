@@ -1,11 +1,12 @@
 # This function should return all the tags on the different lines in a format that can be parsed
 # Basically the standardisation of all tags
 
-def absFilter(line)
+def absFilter(input)
+  line = input.clone
   line.strip!
-  tag = line.match(/^\s*\.(\w*)/).to_s
+  tag = line.match(/\s*\.\w*\s*/).to_s
   has_attr = !line.match(/#{tag}\s*\[/).nil?
-  attributes = (has_attr ? line.match(/(#{tag})\s*\[(.*?)\]/)[0].to_s : " ")
+  attributes = (has_attr ? line.match(/(#{tag})\s*(\[.*?\]\s*)/)[0].to_s : "")
   if has_attr
     contents = line.sub(/#{tag}\s*\[.*?\]\s*/, "")
   else
@@ -13,8 +14,12 @@ def absFilter(line)
   end
   has_brackets = contents[0] == "{" && contents[-1] == "}"
   contents = "{#{contents}}" if !has_brackets
-  return "#{tag}#{attributes}#{contents}" if !has_attr
-  return "#{attributes} #{contents}"
+  if !has_attr
+    result =  "#{tag}#{attributes}#{contents}"
+  else
+    result = "#{attributes}#{contents}"
+  end
+  return input.sub(input.strip, result)
 end
 
 def bracketsBalanced?(text)
@@ -34,7 +39,11 @@ def read(file)
   line = ""
   until f.empty?
     # Get the tag at the front
-    line += f.shift
+    front = f.shift
+    if bracketsBalanced?(front) && !isBlank?(front) && front.strip[0] == "."
+      front = absFilter(front)
+    end
+    line += front.clone
     if bracketsBalanced? line
       # Brackets are matched
       result << line

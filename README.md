@@ -6,6 +6,19 @@
 
 Let's be honest, nobody really likes HTML. For us it seemed to be a massive burden when it came to web development so we decided to create a language that allows one to glide through web development without tearing their hair out.
 
+## Why use SAHL over HTML?
+HTML has been around as long as the world wide web and it is surprising to see that many technologies from around that time have been replaced by new alternatives that are miles ahead but HTML seems to be lacking behind. SAHL includes completely rewritten syntax from the ground up to provide a fresh start on web development. It also includes a templating system that not only removes the hassle of updating the same tags in multiple files but makes it so much faster to develop an awesome website.
+
+## Features
+🚫 Abstracted end tags
+💻 Converts straight into HTML ready to be viewed in any browser
+🎨 Syntax suited to feel like CSS and Javascript
+🖋 An incredibly useful templating system allows modular markup
+🏎️ Speedy conversion taking only a couple of milliseconds
+⚠️ Invalid tag warnings to help identify issues
+💾 Drop in popular css & js frameworks as well as fonts with ease
+✔️ Thorough unit testing to minimise bugs and inconvenience
+
 ## Examples Of HTML vs SAHL
 
 ### A Basic Title
@@ -66,13 +79,13 @@ In SAHL:
 ```
 .div {
   .p Here we have an .b {image}:
-  .img[src: "...", alt: "image"]
+  .img[src: "..."] {}
 }
 ```
 
-### A Brand New Templating System
+### Templating with SAHL
 In many websites there are repeated parts e.g. a navbar or footer. So with SAHL we added a templating system.
-Write the SAHL you want to use in multiple pages and then just import it and SAHL will drop in the code in the correct place.
+Write the SAHL you want to use in multiple pages in a seperate file. SAHL will drop in the code in the correct place when imported in another file.
 This means that when you update your templates, the entire SAHL project updates to match. No more copy, pasting and correcting everywhere.
 
 Lets say you write some navbar code in `nav.sahl`.
@@ -85,9 +98,9 @@ To use it in any other SAHL file in the same directory, do this in the target SA
 ```
 @nav.sahl
 ```
-And all the code in nav.sahl will be placed in the position of the @.
+And all the code in nav.sahl will be placed in the file where you imported it.
 
-### Expanding Your Website Is No Longer Verbose To Set Up
+### Creating a real world website is no longer verbose to set up
 #### Allows you to import CSS frameworks, JS modules and fonts with ease
 In HTML:
 ```

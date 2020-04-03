@@ -10,14 +10,14 @@ Let's be honest, nobody really likes HTML. For us it seemed to be a massive burd
 HTML has been around as long as the world wide web and it is surprising to see that many technologies from around that time have been replaced by new alternatives that are miles ahead but HTML seems to be lacking behind. SAHL includes completely rewritten syntax from the ground up to provide a fresh start on web development. It also includes a templating system that not only removes the hassle of updating the same tags in multiple files but makes it so much faster to develop an awesome website.
 
 ## Features
-🚫 Abstracted end tags
-💻 Converts straight into HTML ready to be viewed in any browser
-🎨 Syntax suited to feel like CSS and Javascript
-🖋 An incredibly useful templating system allows modular markup
-🏎️ Speedy conversion taking only a couple of milliseconds
-⚠️ Invalid tag warnings to help identify issues
-💾 Drop in popular css & js frameworks as well as fonts with ease
-✔️ Thorough unit testing to minimise bugs and inconvenience
+ - 🚫 Abstracted end tags
+ - 💻 Converts straight into HTML ready to be viewed in any browser
+ - 🎨 Syntax suited to feel like CSS and Javascript
+ - 🖋 An incredibly useful templating system allows modular markup
+ - 🏎️ Speedy conversion taking only a couple of milliseconds
+ - ⚠️ Invalid tag warnings to help identify issues
+ - 💾 Drop in popular css & js frameworks as well as fonts with ease
+ - ✔️ Thorough unit testing to minimise bugs and inconvenience
 
 ## Examples Of HTML vs SAHL
 
@@ -101,7 +101,7 @@ To use it in any other SAHL file in the same directory, do this in the target SA
 And all the code in nav.sahl will be placed in the file where you imported it.
 
 ### Creating a real world website is no longer verbose to set up
-#### Allows you to import CSS frameworks, JS modules and fonts with ease
+#### Allows you to import JS+CSS frameworks and fonts with ease
 In HTML:
 ```
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">

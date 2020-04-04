@@ -38,21 +38,22 @@ def convertLine(line)
 end
 
 def doWork
+  silent = ARGV.length > 1 && ARGV[-1] == "-s"
   file = "#{Dir.pwd}/#{ARGV[0]}"
   data = read(file)
 
   result = []
-  print "Parsing blocks: "
+  print "Parsing blocks: " unless silent
   data.each do |line|
     result.push convertLine(line)
-    print "."
+    print "." unless silent
   end
 
   new = file.sub(/(\.\w*)$/, ".html")
   f = File.open(new, "w")
   f.seek(0)
   f.write(result.join "\n")
-  puts "\nWritten to #{new}"
+  puts "\nWritten to #{new}" unless silent
 end
 
 doWork if __FILE__ == $0

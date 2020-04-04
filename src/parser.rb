@@ -47,7 +47,7 @@ class Parser
   def getTag(x)
     # Get a whole tag with brackets and name
     # Create a substring from where the tag starts to the end
-    match = @string.index(@string.match(/(\.#{x}\s*(\{|\[))/).to_s, @tags.count(x))
+    match = @string.index(@string.match(/(\.#{x}\s*)/).to_s, @tags.count(x))
     match = 0 if match.nil?
     str = @string[match..-1]
     controller = false
@@ -74,7 +74,7 @@ class Parser
   def height(tag)
     # Get the height of a specified tag
     # Create a substring to where the tag starts
-    match = @string.index(@string.match(/(\.#{tag}\s*(|\[.*\])\s*\{)/).to_s, @tags.count(tag))
+    match = @string.index(@string.match(/(\.#{tag}\s*(|\[.*\])\s*)/).to_s, @tags.count(tag))
     match = -1 if match.nil?
     str = @string[0..match]
     c = 0

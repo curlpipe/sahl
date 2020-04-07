@@ -33,12 +33,12 @@ In SAHL:
 ### Comments
 In HTML:
 ```HTML
-<!-- This is a comment --!>
+<!-- This is a comment -->
 
 <!-- 
 This is a comment
 on multiple lines
---!>
+-->
 ```
 In SAHL:
 ```

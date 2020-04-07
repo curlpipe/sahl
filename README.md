@@ -17,7 +17,6 @@ HTML has been around as long as the world wide web and it is surprising to see t
  - 🏎️ Speedy conversion taking only a couple of milliseconds
  - ⚠️ Invalid tag warnings to help identify issues
  - 💾 Drop in popular css & js frameworks as well as fonts with ease
- - ✔️ Thorough unit testing to minimise bugs and inconvenience
 
 ## Examples Of HTML vs SAHL
 
@@ -31,6 +30,26 @@ In SAHL:
 .h1 Example Title
 ```
 
+### Comments
+In HTML:
+```HTML
+<!-- This is a comment --!>
+
+<!-- 
+This is a comment
+on multiple lines
+--!>
+```
+In SAHL:
+```
+// This is a comment
+
+/* 
+This is a comment
+on multiple lines
+*/
+```
+
 ### A Title With Styling
 In HTML:
 ```HTML
@@ -39,6 +58,16 @@ In HTML:
 In SAHL:
 ```
 .h1[style: "color: #0000ff; float: left;"] Example Title
+```
+
+### Multi-attribute tags
+In HTML:
+```HTML
+<h1 class="title" style="color: #0000ff">Title</h1>
+```
+In SAHL:
+```
+.h1[class: "title", style: "color: #0000ff"] Title
 ```
 
 ### Multi-line Elements
@@ -79,7 +108,7 @@ In SAHL:
 ```
 .div {
   .p Here we have an .b {image}:
-  .img[src: "..."] {}
+  .img[src: "..."]
 }
 ```
 
@@ -91,7 +120,7 @@ This means that when you update your templates, the entire SAHL project updates 
 Lets say you write some navbar code in `nav.sahl`.
 ```
 .nav {
-    // navbar code here
+  // navbar code here
 }
 ```
 To use it in any other SAHL file in the same directory, do this in the target SAHL file:

@@ -7,7 +7,7 @@ class AttributeParser
   end
   def getRaw
     return "" if @string == "\n"
-    @raw = @string.match(/\.\w*\s*(|\[(.*)\])\s*\{/)[-1].to_s
+    @raw = @string.match(/\.\w*\s*(|\[(.*?)\])\s*\{/)[-1].to_s
   end
   def html
     inQuotes = false

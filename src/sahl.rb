@@ -1,7 +1,13 @@
 require_relative 'parser.rb'
 require_relative 'read.rb'
+require 'json'
 
-class Array 
+tagsFile = JSON.parse(File.open("../assets/validTags.json").read)
+$validTags = tagsFile["validTags"]
+$voidTags = tagsFile["voidTags"]
+$errorLog = []
+
+class Array
   def chuck(x)
     delete_at(index(x))
   end
@@ -11,22 +17,43 @@ def isBlank?(x)
   x.strip == ""
 end
 
-def convert(tag, attr = nil)
+def validTag?(tag)
+  return $validTags.include? tag
+end
+
+def voidTag?(tag)
+  return $voidTags.include? tag
+end
+
+def convert(tag, attr = nil, silent)
   type = tag.match(/^\.(\w*)/).to_s[1..-1]
   contents = tag.match(/{(.*)}\s*$/)
   return "" if contents == nil
   contents = contents[1].to_s.strip
-  return "<#{type}>#{contents}</#{type}>" if attr == nil || attr.raw == ""
-  return "<#{type} #{attr.html}>#{contents}</#{type}>"
+  if !silent
+    if validTag?(type)
+      print "."
+    else
+      print "!"
+      $errorLog << "Invalid tag '#{type}' detected"
+    end
+  end
+  if !voidTag?(type)
+    return "<#{type}>#{contents}</#{type}>" if attr == nil || attr.raw == ""
+    return "<#{type} #{attr.html}>#{contents}</#{type}>"
+  else
+    return "<#{type}>" if attr == nil || attr.raw == ""
+    return "<#{type} #{attr.html}>"
+  end
 end
 
-def convertLine(line)
+def convertLine(line, silent)
   return "" if isBlank? line
   line = absFilter(line)
   parser = Parser.new(line)
   loop do
     peak = parser.getPeak
-    nl = convert(peak[1], attr = AttributeParser.new(peak[1]))
+    nl = convert(peak[1], attr = AttributeParser.new(peak[1]), silent)
     type = peak[1].match(/^\.(\w*)/).to_s[1..-1]
     parser.tags.chuck type
     parser.string.gsub!(peak[1], nl)
@@ -45,8 +72,11 @@ def doWork
   result = []
   print "Parsing blocks: " unless silent
   data.each do |line|
-    result.push convertLine(line)
-    print "." unless silent
+    result.push convertLine(line, silent)
+  end
+  puts "\n\n"
+  $errorLog.each do |error|
+    puts error
   end
 
   new = file.sub(/(\.\w*)$/, ".html")

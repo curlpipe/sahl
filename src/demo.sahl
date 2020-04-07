@@ -4,7 +4,7 @@
 
 .invalidtag {This should produce a warning}
 
-.h6{I am convinced 
+.h6{I am convinced
     this will work}
 
 .ul {
@@ -20,6 +20,8 @@
   wow, isn't this incredible!
   .b{This .i{is} AMAZING!!!}
 }
+
+.p {this is an image .img[src="image.png"]{}}
 
 .div {
   .div {

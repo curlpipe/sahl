@@ -113,8 +113,8 @@ class TestSahl < Test::Unit::TestCase
   def test_convert_line
     assert convertLine("") == ""
     assert convertLine(".p Hello world") == "<p>Hello world</p>"
-    assert convertLine(read("1.sahl")[0]) == "<h1>Hello world</h1>"
-    assert convertLine(read("2.sahl")[0]) == "<h1><b>Hello world</b></h1>"
-    assert convertLine(read("3.sahl")[0]) == "<ul>\n  <li class = \"test\" style = \"color: red;\"><b>Home</b></li>\n  <li class = \"test1\">Contact</li>\n  <li class = \"test2\">About</li>\n  <li class = \"test3\">Help</li>\n</ul>"
+    assert convertLine(read("1.sahl")[0]) == "<h1>Hello world</h1>\n"
+    assert convertLine(read("2.sahl")[0]) == "<h1><b>Hello world</b></h1>\n"
+    assert convertLine(read("3.sahl")[0]) == "<ul>\n  <li class = \"test\" style = \"color: red;\"><b>Home</b></li>\n  <li class = \"test1\">Contact</li>\n  <li class = \"test2\">About</li>\n  <li class = \"test3\">Help</li>\n</ul>\n"
   end
 end

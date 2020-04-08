@@ -91,8 +91,8 @@ class Parser
   end
   def getPeak
     # Get the tag with the highest level in the string
-    peak = 0
-    peakData = ""
+    peakData = getTag @tags[0]
+    peak = height @tags[0]
     # For each tag, get the height
     @tags.each do |x|
       th = height(x)
@@ -106,7 +106,7 @@ class Parser
     unless peakData.empty?
       return peak, peakData
     else
-      return 0, @string
+      return -1, @string
     end
   end
 end

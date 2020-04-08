@@ -1,9 +1,9 @@
 - [ ] Add comments
-- [ ] Add invalid tag warning
 - [ ] Create a templating system
 - [ ] Add shorthands for premade stylesheets
 - [X] Add support for nesting
 - [X] Add support for attributes
 - [X] Create tests
 - [X] Add curly bracket abstraction
+- [X] Add invalid tag warning
 

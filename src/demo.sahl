@@ -1,4 +1,6 @@
-.h1{This is a heading}
+// This is a single line comment
+
+.h1{This is a heading} // Heading
 
 .h3 With all the syntax abstracted
 

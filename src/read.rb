@@ -42,7 +42,8 @@ def read(file)
     front = f.shift
     front = ".comment{#{front[2..-1].strip}}" if front.start_with? "//"
     if front.include? "//"
-      front = front.strip.split("//", 2).first
+      front = front.strip.split("//", 2)
+      front = front[0]+" .comment{#{front[1]}}"
     end
     if bracketsBalanced?(front) && !isBlank?(front) && front.strip[0] == "."
       front = absFilter(front)

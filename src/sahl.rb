@@ -25,17 +25,17 @@ def voidTag?(tag)
   return $voidTags.include? tag
 end
 
-def convert(tag, attr = nil, silent)
+def convert(tag, attr = nil)
   type = tag.match(/^\.(\w*)/).to_s[1..-1]
   contents = tag.match(/{(.*)}\s*$/)
   return "" if contents == nil
   contents = contents[1].to_s.strip
-  if !silent
+  if !$silent
     if validTag?(type)
       print "."
     else
       print "!"
-      $errorLog << "Invalid tag '#{type}' detected"
+      $errorLog.push "Warning: Invalid tag '#{type}' detected"
     end
   end
   if !voidTag?(type)
@@ -47,13 +47,13 @@ def convert(tag, attr = nil, silent)
   end
 end
 
-def convertLine(line, silent)
+def convertLine(line)
   return "" if isBlank? line
   line = absFilter(line)
   parser = Parser.new(line)
   loop do
     peak = parser.getPeak
-    nl = convert(peak[1], attr = AttributeParser.new(peak[1]), silent)
+    nl = convert(peak[1], attr = AttributeParser.new(peak[1]))
     type = peak[1].match(/^\.(\w*)/).to_s[1..-1]
     parser.tags.chuck type
     parser.string.gsub!(peak[1], nl)
@@ -65,16 +65,16 @@ def convertLine(line, silent)
 end
 
 def doWork
-  silent = ARGV.length > 1 && ARGV[-1] == "-s"
+  $silent = ARGV.length > 1 && ARGV[-1] == "-s"
   file = "#{Dir.pwd}/#{ARGV[0]}"
   data = read(file)
 
   result = []
-  print "Parsing blocks: " unless silent
+  print "Parsing blocks: " unless $silent
   data.each do |line|
-    result.push convertLine(line, silent)
+    result.push convertLine(line)
   end
-  puts "\n\n"
+  puts "\n\n" unless $silent
   $errorLog.each do |error|
     puts error
   end
@@ -83,7 +83,7 @@ def doWork
   f = File.open(new, "w")
   f.seek(0)
   f.write(result.join "\n")
-  puts "\nWritten to #{new}" unless silent
+  puts "\nWritten to #{new}" unless $silent
 end
 
 doWork if __FILE__ == $0

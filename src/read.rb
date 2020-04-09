@@ -55,6 +55,7 @@ def read(file)
     x.gsub("\n  ", "!sahlbreak!!sahlspace!") 
      .gsub("  ", "!sahlspace!")
      .gsub("\n}", "!sahlbreak!}")
+     .gsub("{\n", "{!sahlbreak!")
   }
   return result
 end

@@ -40,16 +40,12 @@ def read(file)
   until f.empty?
     # Get the tag at the front
     front = f.shift
-    front = ".comment{#{front[2..-1].strip}}" if front.start_with? "//"
-    if front.include? "//"
-      front = front.strip.split("//", 2)
-      front = front[0]+" .comment{#{front[1]}}"
-    end
+    next if front.strip == ""
     if bracketsBalanced?(front) && !isBlank?(front) && front.strip[0] == "."
       front = absFilter(front)
     end
     line += front.clone
-    if bracketsBalanced? line
+    if bracketsBalanced?(line)
       # Brackets are matched
       result.push line
       line = ""

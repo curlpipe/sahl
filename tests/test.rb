@@ -24,21 +24,19 @@ class TestReader < Test::Unit::TestCase
   end
   def test_file_basics
     data = read("1.sahl")
-    assert data == [".h1{Hello world}\n", "\n", ".p{Hello world}\n", 
-                    "!sahlspace!!sahlspace!!sahlspace!!sahlspace!\n", 
-                    ".h2 {Subheading}\n", "\n"]
+    assert data == [".h1{Hello world}\n", ".p{Hello world}\n", 
+                    ".h2 {Subheading}\n"]
   end
   def test_recursive_basics
     data = read("./2.sahl")
     assert data == [".h1{.b{Hello world}}\n", 
-                    ".div {!sahlbreak!!sahlspace!.h1 {Hello world}!sahlbreak!}\n", 
-                    "\n"]
+                    ".div {!sahlbreak!!sahlspace!.h1 {Hello world}!sahlbreak!}\n"]
   end
   def test_extreme_file
     data = read("./3.sahl")
     assert data == [".ul {!sahlbreak!!sahlspace!.li[class:\"test\", style: \"color: red;\"] {.b{Home}}!sahlbreak!!sahlspace!.li[class :\"test1\"]{Contact}!sahlbreak!!sahlspace!.li [class: \"test2\"] {About}!sahlbreak!!sahlspace!.li [class : \"test3\"]{Help}!sahlbreak!}\n", 
-                    "\n", ".p {!sahlbreak!!sahlspace!This .b{element}!sahlbreak!!sahlspace!is on multiple lines!sahlbreak!!sahlspace!wow, isn't this incredible!!sahlbreak!!sahlspace!.b{This .i{is} AMAZING!!!}!sahlbreak!}\n", 
-                    "\n", ".div {!sahlbreak!!sahlspace!.div {!sahlbreak!!sahlspace!!sahlspace!Hello world!sahlbreak!!sahlspace!}!sahlbreak!}\n", "\n"]
+                    ".p {!sahlbreak!!sahlspace!This .b{element}!sahlbreak!!sahlspace!is on multiple lines!sahlbreak!!sahlspace!wow, isn't this incredible!!sahlbreak!!sahlspace!.b{This .i{is} AMAZING!!!}!sahlbreak!}\n", 
+                    ".div {!sahlbreak!!sahlspace!.div {!sahlbreak!!sahlspace!!sahlspace!Hello world!sahlbreak!!sahlspace!}!sahlbreak!}\n"]
   end
 end
 

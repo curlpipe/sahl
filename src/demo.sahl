@@ -1,5 +1,11 @@
 .h1{This is a heading}
 
+.comment Comment example
+
+.comment {
+hello
+}
+
 .h3 With all the syntax abstracted
 
 .invalidtag {This should produce a warning}

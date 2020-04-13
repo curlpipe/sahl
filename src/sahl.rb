@@ -1,6 +1,21 @@
 # The sahl converter
 require 'optparse'
 
+tagsFile = {"validTags"=>["!doctype", "a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bb", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "datagrid", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "eventsource", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr"], 
+            "voidTags"=>["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem"]}
+
+$validTags = tagsFile["validTags"]
+$voidTags = tagsFile["voidTags"]
+$errorLog = []
+
+def validTag?(tag)
+  return $validTags.include? tag
+end
+
+def voidTag?(tag)
+  return $voidTags.include? tag
+end
+
 def index_all(hay, needle)
   array = []
   inQuote = false
@@ -67,11 +82,11 @@ class Parser
     # Iterate through all tag types
     table = {}
     @tags.uniq.each do |tag|
-      tag = "."+tag
       subtable = {}
       # Find all occurences of the tag
-      o = index_all(@raw, /#{tag}\W/)
+      o = index_all(@raw, /\.#{tag}\w*\W/)
       next if o.nil?
+      tag = "."+tag
       # Find the highest
       highest = 0
       h = 0
@@ -162,16 +177,31 @@ def convert(tag)
   attributes = AttributeParser.new(tag)
   return "" if contents == nil
   contents = contents[-1].to_s
-  if attributes.hasAttributes?
-    return base.gsub(tag, "<#{type} #{attributes.html}>#{contents}</#{type}>")
+  if !$silent
+    if validTag? type
+      print "."
+    else
+      print "!"
+      $errorLog.push "Warning: Invalid tag '#{type}' detected"
+    end
+  end
+  if voidTag? type
+    if attributes.hasAttributes?
+      return base.gsub(tag, "<#{type} #{attributes.html}>")
+    else
+      return base.gsub(tag, "<#{type}>")
+    end
   else
-    return base.gsub(tag, "<#{type}>#{contents}</#{type}>")
+    if attributes.hasAttributes?
+      return base.gsub(tag, "<#{type} #{attributes.html}>#{contents}</#{type}>")
+    else
+      return base.gsub(tag, "<#{type}>#{contents}</#{type}>")
+    end
   end
 end
 
 def convertBlock(block)
   # Recursively convert blocks
-  print "." unless $silent
   p = Parser.new(block)
   loop do
     peak = p.getPeak[0]
@@ -185,10 +215,8 @@ end
 def convertRaw(data)
   # Take a file and convert it into html
   blocks = getBlocks(standardise(data))
-  print "Parsing blocks: " unless $silent
-  blocks.map! do |b|
-    convertBlock(b) 
-  end
+  print "Parsing: " unless $silent
+  blocks.map! { |b| convertBlock(b) }
   puts "\nWritten file to #{$out}" unless $silent
   return blocks.join
 end
@@ -205,3 +233,4 @@ f = File.open($in, "r").read
 w = File.open($out, "w")
 w.seek 0
 w.write convertRaw(f)
+puts $errorLog

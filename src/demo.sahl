@@ -32,3 +32,5 @@ hello
     Hello world
   }
 }
+
+.p Here we have an .img[src="..."]{}

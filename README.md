@@ -42,12 +42,12 @@ on multiple lines
 ```
 In SAHL:
 ```
-.comment This is a comment
+// This is a comment
 
-.comment {
+/*
 This is a comment
 on multiple lines
-}
+*/
 ```
 
 ### A Title With Styling

@@ -3,6 +3,7 @@ require 'optparse'
 
 def index_all(hay, needle)
   array = []
+  inQuote = false
   (0..hay.length).each { |x| array.push hay.index(needle, x) }
   array = array.compact.uniq
 end
@@ -69,7 +70,7 @@ class Parser
       tag = "."+tag
       subtable = {}
       # Find all occurences of the tag
-      o = index_all(@raw, tag)
+      o = index_all(@raw, /#{tag}\W/)
       next if o.nil?
       # Find the highest
       highest = 0
@@ -104,7 +105,7 @@ def standardise(raw)
       line = line[0]+"<!-- "+line[1]+" -->"
     end
     if line.strip.start_with?(".") && bracketBalance(line) == 0
-      head = line.match(/(^\s*\.\w*(\[.*?\]|)\s*)/)[0].to_s
+      head = line.match(/(^\s*\.\w*\s*(\[.*?\]|)\s*)/)[0].to_s
       contents = line.sub(head, "")
       hasBrackets = contents[0] == "{" && contents[-1] == "}"
       contents = "{#{contents}}" if !hasBrackets

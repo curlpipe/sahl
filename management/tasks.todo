@@ -1,9 +1,8 @@
-- [ ] Add comments
-- [ ] Create a templating system
-- [ ] Add shorthands for premade stylesheets
-- [X] Add support for nesting
-- [X] Add support for attributes
-- [X] Create tests
-- [X] Add curly bracket abstraction
-- [X] Add invalid tag warning
-
+- [ ] Tag validation (with endtag validation)
+- [ ] Templating system
+- [ ] External framework importation
+- [ ] Tests ! (Test all functions)
+- [X] Attributes ! (add :, and =, notation)
+- [X] Comments ! (one line, inline and multiline)
+- [X] Command line interface ! (with silent, output options)
+- [X] Writing to a file !

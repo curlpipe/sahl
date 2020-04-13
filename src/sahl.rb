@@ -1,92 +1,206 @@
-require_relative 'parser.rb'
-require_relative 'read.rb'
+# The sahl converter
+require 'optparse'
 
-tagsFile = {"validTags"=>["!doctype", "a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bb", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "datagrid", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "eventsource", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr", "comment"], 
-            "voidTags"=>["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem"]}
+def index_all(hay, needle)
+  array = []
+  (0..hay.length).each { |x| array.push hay.index(needle, x) }
+  array = array.compact.uniq
+end
 
-$validTags = tagsFile["validTags"]
-$voidTags = tagsFile["voidTags"]
-$errorLog = []
-
-class Array
-  def chuck(x)
-    delete_at(index(x))
+class AttributeParser
+  def initialize(block)
+    @raw = block
+    @at = @raw.match(/\.\w*\s*(|\[(.*?)\])\s*\{/)[-1].to_s
+  end
+  def hasAttributes?
+    !@at.empty?
+  end
+  def html
+    inQuotes = false
+    result = ""
+    seek = 0
+    @at.chars.each do |ch|
+      inQuotes = !inQuotes if ch == '"'
+      if ch == ":" && !inQuotes
+        result += "="
+      elsif ch == "," && !inQuotes
+      elsif ch == " " && !inQuotes && @at.chars[seek-1] == ":"
+      else
+        result += ch
+      end
+      seek += 1
+    end
+    return result
   end
 end
 
-def isBlank?(x)
-  x.strip == ""
+class Parser
+  attr_reader :tags
+  attr_accessor :raw
+  def initialize(block)
+    # Obtain a list of tags
+    @raw = block
+    updateTags
+  end
+  def updateTags
+    @tags = @raw.scan(/\s*\.(\w*)\s*(\{|\[)/).map!(&:first)
+  end
+  def grabTag(s)
+    str = @raw[s..-1]
+    controller = false
+    c = 0
+    contents = []
+    str.chars.each do |b|
+      if b == "{"
+        controller = true
+        c += 1
+      elsif b == "}"
+        c -= 1
+      end
+      contents.push(b)
+      break if c == 0 unless !controller
+    end
+    return contents.join
+  end
+  def getPeak
+    # Iterate through all tag types
+    table = {}
+    @tags.uniq.each do |tag|
+      tag = "."+tag
+      subtable = {}
+      # Find all occurences of the tag
+      o = index_all(@raw, tag)
+      next if o.nil?
+      # Find the highest
+      highest = 0
+      h = 0
+      o.each do |i|
+        level = bracketBalance(@raw[0..i])
+        subtable[i] = level
+      end
+      table[tag] = subtable
+    end
+    table.each { |k, v| table[k] = v.max_by{ |k, v| v } }
+    table = table.max_by { |k, v| v[1] }
+    return [grabTag(table[1][0]), table[1][1]]
+  end
 end
 
-def validTag?(tag)
-  return $validTags.include? tag
-end
-
-def voidTag?(tag)
-  return $voidTags.include? tag
-end
-
-def convert(tag, attr = nil)
-  type = tag.match(/^\.(\w*)/).to_s[1..-1]
-  contents = tag.match(/{(.*)}\s*$/)
-  return "" if contents == nil
-  contents = contents[1].to_s.strip
-  if !$silent
-    if validTag?(type)
-      print "."
+def standardise(raw)
+  # Turn abstracted brackets into proper valid tags
+  raw = raw.gsub("/*", "<!--").gsub("*/", "-->")
+  result = []
+  lines = raw.split("\n")
+  lines.each do |line|
+    if line.strip.start_with?("// ")
+      line = "<!--#{line.strip[2..-1]} -->"
+    elsif line.strip.start_with?("//")
+      line = "<!-- #{line.strip[2..-1]} -->"
+    elsif line.include?("// ")
+      line = line.split("//", 2)
+      line = line[0]+"<!--"+line[1]+" -->"
+    elsif line.include?("//")
+      line = line.split("//", 2)
+      line = line[0]+"<!-- "+line[1]+" -->"
+    end
+    if line.strip.start_with?(".") && bracketBalance(line) == 0
+      head = line.match(/(^\s*\.\w*(\[.*?\]|)\s*)/)[0].to_s
+      contents = line.sub(head, "")
+      hasBrackets = contents[0] == "{" && contents[-1] == "}"
+      contents = "{#{contents}}" if !hasBrackets
+      result.push "\n"+head+contents
     else
-      print "!"
-      $errorLog.push "Warning: Invalid tag '#{type}' detected"
+      result.push "\n"+line
     end
   end
-  if !voidTag?(type)
-    return "<#{type}>#{contents}</#{type}>" if attr == nil || attr.raw == ""
-    return "<#{type} #{attr.html}>#{contents}</#{type}>"
+  return result.join
+end
+
+def bracketBalance(data)
+  # Return the net balance of the brackets
+  c = 0
+  data.chars.each do |b|
+    if b == "{"
+      c += 1
+    elsif b == "}"
+      c -= 1
+    end
+  end
+  return c
+end
+
+def getBlocks(data)
+  # Seperate everything by matching brackets
+  result = []
+  c = 0
+  line = ""
+  trigger = false
+  data.chars.each do |ch|
+    if ch == "{"
+      trigger = true
+      c += 1
+    elsif ch == "}"
+      c -= 1
+    end
+    line += ch
+    if trigger && c == 0
+      result.push line
+      line = ""
+      trigger = false
+    end
+  end
+  return result
+end
+
+def convert(tag)
+  # Where the conversion to HTML happens
+  base = tag.clone
+  tag.strip!
+  type = tag.match(/^\s*\.(\w*)/m)[1].to_s
+  contents = tag.match(/{(.*?)}\s*$/m)
+  attributes = AttributeParser.new(tag)
+  return "" if contents == nil
+  contents = contents[-1].to_s
+  if attributes.hasAttributes?
+    return base.gsub(tag, "<#{type} #{attributes.html}>#{contents}</#{type}>")
   else
-    return "<#{type}>" if attr == nil || attr.raw == ""
-    return "<#{type} #{attr.html}>"
+    return base.gsub(tag, "<#{type}>#{contents}</#{type}>")
   end
 end
 
-def convertLine(line)
-  return "" if isBlank? line
-  line = absFilter(line)
-  parser = Parser.new(line)
+def convertBlock(block)
+  # Recursively convert blocks
+  print "." unless $silent
+  p = Parser.new(block)
   loop do
-    peak = parser.getPeak
-    break if Parser.new(peak[1]).tags.empty?
-    nl = convert(peak[1], attr = AttributeParser.new(peak[1]))
-    type = peak[1].match(/^\.(\w*)/).to_s[1..-1]
-    parser.tags.chuck type
-    parser.string.gsub!(peak[1], nl)
+    peak = p.getPeak[0]
+    p.raw.gsub!(peak, convert(peak))
+    p.updateTags
+    break if p.tags.empty?
   end
-  parser.string.gsub!("<comment>", "<!-- ")
-  parser.string.gsub!("</comment>", " -->")
-  parser.string.gsub!("!sahlbreak!", "\n")
-  parser.string.gsub!("!sahlspace!", "  ")
-  return parser.string
+  return p.raw
 end
 
-def doWork
-  $silent = ARGV.length > 1 && ARGV[-1] == "-s"
-  file = "#{Dir.pwd}/#{ARGV[0]}"
-  data = read(file)
-
-  result = ["<!DOCTYPE html>"]
+def convertRaw(data)
+  # Take a file and convert it into html
+  blocks = getBlocks(standardise(data))
   print "Parsing blocks: " unless $silent
-  data.each do |line|
-    result.push convertLine(line)
+  blocks.map! do |b|
+    convertBlock(b) 
   end
-  puts "\n\n" unless $silent || $errorLog.empty?
-  $errorLog.each do |error|
-    puts error
-  end
-
-  new = file.sub(/(\.\w*)$/, ".html")
-  f = File.open(new, "w")
-  f.seek(0)
-  f.write(result.join "\n")
-  puts "\nWritten to #{new}" unless $silent
+  puts "\nWritten file to #{$out}" unless $silent
+  return blocks.join
 end
 
-doWork if __FILE__ == $0
+$silent = false
+$in = ARGV[-1]
+$out = $in.sub(/(\.\w*)$/, ".html")
+OptionParser.new do |opts|
+  opts.banner = "Usage: sahl [options] [input]"
+  opts.on("-s", "--silent", "Stop all output to stdout") { |s| $silent = s }
+  opts.on("-oFILENAME", "--output filename", "File to write to") { |o| $out = o }
+end.parse!
+f = File.open($in, "r").read
+w = File.open($out, "w")
+w.seek 0
+w.write convertRaw(f)

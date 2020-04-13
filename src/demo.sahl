@@ -1,10 +1,10 @@
 .h1{This is a heading}
 
-.comment Comment example
+// Comment example
 
-.comment {
+/*
 hello
-}
+*/
 
 .h3 With all the syntax abstracted
 
@@ -15,9 +15,9 @@ hello
 
 .ul {
   .li[class:"test", style: "color: red;"] {.b{Home}}
-  .li[class :"test1"]{Contact}
-  .li [class: "test2"] {About}
-  .li [class : "test3"]{Help}
+  .li[class: "test1"]{Contact}
+  .li[class: "test2"] {About}
+  .li[class: "test3"]{Help}
 }
 
 .p {
@@ -26,8 +26,6 @@ hello
   wow, isn't this incredible!
   .b{This .i{is} AMAZING!!!}
 }
-
-.p {this is an image .img[src="image.png"]{}}
 
 .div {
   .div {

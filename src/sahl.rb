@@ -108,16 +108,23 @@ def standardise(raw)
   result = []
   lines = raw.split("\n")
   lines.each do |line|
+    quotes = false
     if line.strip.start_with?("// ")
       line = "<!--#{line.strip[2..-1]} -->"
     elsif line.strip.start_with?("//")
       line = "<!-- #{line.strip[2..-1]} -->"
-    elsif line.include?("// ")
-      line = line.split("//", 2)
-      line = line[0]+"<!--"+line[1]+" -->"
-    elsif line.include?("//")
-      line = line.split("//", 2)
-      line = line[0]+"<!-- "+line[1]+" -->"
+    end
+    line.chars.each_with_index do |ch, i|
+      quotes = !quotes if ch == "\""
+      begin
+        if ch+line[i+1]+line[i+2] == "// " && !quotes
+          line = line.split("//", 2)
+          line = line[0]+"<!--"+line[1]+" -->"
+        elsif ch+line[i+1] == "//" && !quotes
+          line = line.split("//", 2)
+          line = line[0]+"<!-- "+line[1]+" -->"
+        end
+      rescue; break; end
     end
     if line.strip.start_with?(".") && bracketBalance(line) == 0
       head = line.match(/(^\s*\.\w*\s*(\[.*?\]|)\s*)/)[0].to_s

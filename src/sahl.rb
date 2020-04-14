@@ -218,7 +218,7 @@ def convertRaw(data)
   print "Parsing: " unless $silent
   blocks.map! { |b| convertBlock(b) }
   puts "\nWritten file to #{$out}" unless $silent
-  return blocks.join
+  return "<!DOCTYPE html>"+blocks.join
 end
 
 $silent = false

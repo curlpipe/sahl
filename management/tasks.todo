@@ -6,3 +6,4 @@
 - [X] Command line interface ! (with silent, output options)
 - [X] Writing to a file !
 - [X] Tag validation (with endtag validation)
+- [X] Comments keep whitespace

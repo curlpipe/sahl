@@ -110,9 +110,9 @@ def standardise(raw)
   lines.each do |line|
     quotes = false
     if line.strip.start_with?("// ")
-      line = "<!--#{line.strip[2..-1]} -->"
+      line.sub!(line.strip, "<!--#{line.strip[2..-1]} -->")
     elsif line.strip.start_with?("//")
-      line = "<!-- #{line.strip[2..-1]} -->"
+      line.sub!(line.strip, "<!-- #{line.strip[2..-1]} -->")
     end
     line.chars.each_with_index do |ch, i|
       quotes = !quotes if ch == "\""

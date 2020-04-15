@@ -113,6 +113,16 @@ def standardise(raw)
       line.sub!(line.strip, "<!--#{line.strip[2..-1]} -->")
     elsif line.strip.start_with?("//")
       line.sub!(line.strip, "<!-- #{line.strip[2..-1]} -->")
+    elsif line.strip.start_with?("@")
+      filename = line.strip[1..-1]
+      f = File.open(filename, "r").read
+      whitespace = line.match(/^(\s*)/)[0].to_str
+      if filename.end_with?(".sahl")
+        f = convertRaw(f).split("\n")
+        f.map! { |l| whitespace+l }
+        f = f[1..-1].join("\n")
+      end
+      line = f
     end
     line.chars.each_with_index do |ch, i|
       quotes = !quotes if ch == "\""

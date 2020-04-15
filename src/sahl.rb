@@ -2,7 +2,7 @@
 require 'optparse'
 require 'json'
 
-$fw = "{\n   \"bulma\": \".meta[charset: \\\"utf-8\\\"]\\\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\\\n.link[rel: \\\"stylesheet\\\", href: \\\"https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css\\\"]\",\n   \"boostrap\": \".meta[charset: \\\"utf-8\\\"]\\\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\\\n.link[href: \\\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\\\", rel: \\\"stylesheet\\\"]\",\n   \"opensans\": \".link[href: \\\"https://fonts.googleapis.com/css?family=Open+Sans\\\", rel: \\\"stylesheet\\\", type: \\\"text/css\\\"]\"\n}\n"
+$fw = "{\n   \"bulma\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[rel: \\\"stylesheet\\\", href: \\\"https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css\\\"]\",\n   \"bootstrap\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[href: \\\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\\\", rel: \\\"stylesheet\\\"]\",\n   \"opensans\": \".link[href: \\\"https://fonts.googleapis.com/css?family=Open+Sans\\\", rel: \\\"stylesheet\\\", type: \\\"text/css\\\"]\"\n}\n"
 $fw = File.open("sahl.json", "r").read if File.file?("sahl.json")
 $fw = JSON.parse($fw)
 
@@ -114,16 +114,12 @@ def standardise(raw)
   lines = raw.split("\n")
   lines.each do |line|
     quotes = false
-    if line.strip.start_with?("// ")
-      line.sub!(line.strip, "<!--#{line.strip[2..-1]} -->")
-    elsif line.strip.start_with?("//")
-      line.sub!(line.strip, "<!-- #{line.strip[2..-1]} -->")
-    elsif line.strip.start_with?("@")
+    if line.strip.start_with?("@")
       filename = line.strip[1..-1]
       if $fw.include?(filename)
-        f = $fw[filename]
+        f = standardise($fw[filename])
       else
-        f = File.open(filename, "r").read
+        f = standardise(File.open(filename, "r").read)
       end
       whitespace = line.match(/^(\s*)/)[0].to_str
       if filename.end_with?(".sahl")
@@ -134,6 +130,10 @@ def standardise(raw)
         f = whitespace+f
       end
       line = f
+    elsif line.strip.start_with?("// ")
+      line.sub!(line.strip, "<!--#{line.strip[2..-1]} -->")
+    elsif line.strip.start_with?("//")
+      line.sub!(line.strip, "<!-- #{line.strip[2..-1]} -->")
     end
     line.chars.each_with_index do |ch, i|
       quotes = !quotes if ch == "\""

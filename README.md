@@ -132,7 +132,7 @@ And all the code in nav.sahl will be placed in the file where you imported it.
 ### Creating a real world website is no longer verbose to set up
 #### Allows you to import JS+CSS frameworks and fonts with ease
 In HTML:
-```
+```HTML
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 <h1>Hello World</h1>
@@ -143,3 +143,14 @@ In SAHL:
 @opensans
 .h1 Hello World
 ```
+
+Note: If you wish to use a custom method of obtaining external frameworks or add additional ones other than the default ones, you can create a json file called "sahl.json" where your sahl files are and then the compiler will read it and use those instead.
+
+This is an example of what your sahl.json file should look like:
+```JSON
+{
+   "opensans": ".link[href: \"https://fonts.googleapis.com/css?family=Open+Sans\", rel: \"stylesheet\", type: \"text/css\"]",
+   "name": "SAHL / HTML goes here",
+}
+```
+you can then just use `@` followed by the name in the json file, in any sahl file

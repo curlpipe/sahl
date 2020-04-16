@@ -116,12 +116,14 @@ def standardise(raw)
     quotes = false
     if line.strip.start_with?("@")
       filename = line.strip[1..-1]
+      whitespace = line.match(/^(\s*)/)[0].to_str
       if $fw.include?(filename)
-        f = standardise($fw[filename])
+        f = standardise($fw[filename]).split("\n")
+        f.map! { |l| whitespace+l.strip }
+        f = f.join("\n").strip
       else
         f = standardise(File.open(filename, "r").read)
       end
-      whitespace = line.match(/^(\s*)/)[0].to_str
       if filename.end_with?(".sahl")
         f = convertRaw(f).split("\n")
         f.map! { |l| whitespace+l }

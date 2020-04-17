@@ -18,6 +18,17 @@ HTML has been around as long as the world wide web and it is surprising to see t
  - ⚠️ Invalid tag warnings to help identify issues
  - 💾 Drop in popular css & js frameworks as well as fonts with ease
 
+## Using the compiler
+When you have the compiler installed, you can use it like this:
+```
+ruby sahl.rb example.sahl
+```
+You can see the different options using this:
+```
+ruby sahl.rb -h
+```
+There are binaries available and in that case, replace `ruby sahl.rb` with `sahl`
+
 ## Examples Of HTML vs SAHL
 
 ### A Basic Title

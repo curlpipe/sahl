@@ -1,9 +1,0 @@
-- [ ] Write wiki
-- [X] Attributes ! (add :, and =, notation)
-- [X] Comments ! (one line, inline and multiline)
-- [X] Command line interface ! (with silent, output options)
-- [X] Writing to a file !
-- [X] Tag validation (with endtag validation)
-- [X] Comments keep whitespace
-- [X] Templating system
-- [X] External framework importation

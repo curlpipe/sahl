@@ -133,7 +133,7 @@ def standardise(raw)
         f = standardise($fw[filename]).split("\n")
         f.map! { |l| w+l.strip }
         f = f.join("\n").strip
-      else
+      elsif filename.end_with?(".sahl")
         f = standardise(File.open(filename, "r").read)
       end
       if filename.end_with?(".sahl")

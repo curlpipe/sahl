@@ -9,8 +9,9 @@ $fw = JSON.parse($fw)
 
 tagsFile = {"validTags"=>["!doctype", "a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bb", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "datagrid", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "eventsource", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr"], 
             "voidTags"=>["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem"],
-            "aloneTags"=>["script", "style"]}
+            "aloneTags"=>["script", "style", "comment"]}
 
+$audit = []
 $validTags = tagsFile["validTags"]
 $voidTags = tagsFile["voidTags"]
 $aloneTags = tagsFile["aloneTags"]
@@ -109,21 +110,22 @@ class Parser
       table[tag] = subtable
     end
     table.each { |k, v| table[k] = v.max_by{ |k, v| v } }
-    table = table.max_by { |k, v| v[1] }
+    return [@raw, 0, 0] if table.values.compact.empty?
+    table = table.compact.max_by { |k, v| v[1] } 
     return [grabTag(table[1][0]), table[1][1], table[1][0]]
   end
 end
 
 def standardise(raw)
   # Turn abstracted brackets into proper valid tags
-  raw = raw.gsub("/*", "<!--").gsub("*/", "-->")
+  raw = raw.gsub("/*", ".comment {").gsub("*/", "}")
   result = []
   lines = raw.split("\n")
   lines.each do |line|
     quotes = false
     if line.strip.start_with?("@")
       filename = line.strip[1..-1]
-      w = line.match(/^(\s*)/)[0].to_str
+      w = line.match(/^(\s*)/)[0].to_s
       if $fw.include?(filename)
         f = standardise($fw[filename]).split("\n")
         f.map! { |l| w+l.strip }
@@ -142,9 +144,9 @@ def standardise(raw)
       end
       line = f
     elsif line.strip.start_with?("// ")
-      line.sub!(line.strip, "<!--#{line.strip[2..-1]} -->")
+      line.sub!(line.strip, ".comment {#{line.strip[2..-1]} }")
     elsif line.strip.start_with?("//")
-      line.sub!(line.strip, "<!-- #{line.strip[2..-1]} -->")
+      line.sub!(line.strip, ".comment {#{line.strip[2..-1]}}")
     end
     line.chars.each_with_index do |ch, i|
       quotes = !quotes if ch == "\""
@@ -207,11 +209,21 @@ def getBlocks(data)
   return result
 end
 
+def convertFirst(tag)
+  # Convert only the outermost tag
+  type = tag.match(/^\s*\.(\w*)/m)[1].to_s
+  contents = tag.match(/\.#{type}(|\s*\[.*?\])\s*\{(.*)\}\s*$/m)
+  return "<#{type}>#{contents[-1]}</#{type}>" if contents[1].empty?
+  return "<#{type} #{contents[1]}>#{contents[-1]}</#{type}>"
+end
+
 def convert(tag)
   # Where the conversion to HTML happens
   base = tag.clone
   tag.strip!
-  type = tag.match(/^\s*\.(\w*)/m)[1].to_s
+  type = tag.match(/^\s*\.(\w*)/m)
+  return base if type.nil?
+  type = type[1].to_s
   contents = tag.match(/{(.*?)}\s*$/m)
   return "" if contents == nil
   contents = contents[-1].to_s
@@ -242,12 +254,25 @@ end
 def convertBlock(block)
   # Recursively convert blocks
   p = Parser.new(block)
+  # Set up audits before conversion
+  if $aloneTags.map { |t| p.tags.include?(t) }.any?
+    i = []
+    $aloneTags.each { |t| i.push(p.raw.index("."+t)) }
+    tag = p.grabTag(i.compact.max)
+    type = tag.match(/^\s*\.(\w*)/m)[1].to_s
+    $audit.push tag
+    p.raw.sub!(tag, "&"+$audit.length.to_s)
+  end
   loop do
     peak = p.getPeak[0]
     p.raw.gsub!(peak, convert(peak))
     p.updateTags
     break if p.tags.empty?
   end
+  # Reapply audits after conversion
+  $audit.each_with_index { |a, i| p.raw.sub!("&"+(i+1).to_s, convertFirst(a)) }
+  p.raw.gsub!("<comment>", "<!--")
+  p.raw.gsub!("</comment>", "-->")
   return p.raw
 end
 
@@ -257,7 +282,9 @@ def convertRaw(data)
   print "Parsing: " unless $silent
   blocks.map! { |b| convertBlock(b) }
   puts "\nWritten file to #{$out}" unless $silent
-  return "<!DOCTYPE html>"+blocks.join
+  blocks = blocks.join
+  blocks = "\n"+blocks if !blocks.start_with?("\n")
+  return "<!DOCTYPE html>"+blocks
 end
 
 $silent = false

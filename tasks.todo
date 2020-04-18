@@ -1,3 +1,0 @@
-- [ ] Add support for dropping attributes to new lines
-- [X] Allow importation of css using the @ syntax
-- [X] Make sure sahl ignores the data inside comments, style and script tags

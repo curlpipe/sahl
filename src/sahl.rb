@@ -118,6 +118,10 @@ end
 
 def standardise(raw)
   # Turn abstracted brackets into proper valid tags
+  brackets = raw.scan(/\[(.*?)\]/m).compact
+  if !brackets.empty?
+    brackets.each { |m| raw.gsub!(m[0], m[0].delete("\n").squeeze(" ")) }
+  end
   raw = raw.gsub("/*", ".comment {").gsub("*/", "}")
   result = []
   lines = raw.split("\n")

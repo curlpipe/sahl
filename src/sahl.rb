@@ -1,7 +1,6 @@
 # The sahl converter
 require 'optparse'
 require 'json'
-require 'pry'
 
 $fw = "{\n   \"bulma\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[rel: \\\"stylesheet\\\", href: \\\"https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css\\\"]\",\n   \"bootstrap\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[href: \\\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\\\", rel: \\\"stylesheet\\\"]\",\n   \"opensans\": \".link[href: \\\"https://fonts.googleapis.com/css?family=Open+Sans\\\", rel: \\\"stylesheet\\\", type: \\\"text/css\\\"]\"\n}\n"
 $fw = File.open("sahl.json", "r").read if File.file?("sahl.json")

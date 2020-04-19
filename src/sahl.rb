@@ -1,20 +1,36 @@
 # The sahl converter
 require 'optparse'
 require 'json'
+require 'pry'
 
-$fw = "{\n   \"bulma\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[rel: \\\"stylesheet\\\", href: \\\"https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css\\\"]\",\n   \"bootstrap\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[href: \\\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\\\", rel: \\\"stylesheet\\\"]\",\n   \"opensans\": \".link[href: \\\"https://fonts.googleapis.com/css?family=Open+Sans\\\", rel: \\\"stylesheet\\\", type: \\\"text/css\\\"]\"\n}\n"
+$fw = "{\n   \"bulma\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[rel: \\\"stylesheet\\\", href: \\\"https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css\\\"]\",\n   \"bootstrap\": \".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"viewport\\\", content: \\\"width=device-width, initial-scale=1\\\"]\\n.link[href: \\\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\\\", rel: \\\"stylesheet\\\"]\",\n   \"opensans\": \".link[href: \\\"https://fonts.googleapis.com/css?family=Open+Sans\\\", rel: \\\"stylesheet\\\", type: \\\"text/css\\\"]\",\n   \"fontawesome\": \".script[defer, src: \\\"https://use.fontawesome.com/releases/v5.3.1/js/all.js\\\"]\"\n}\n"
 $fw = File.open("sahl.json", "r").read if File.file?("sahl.json")
 $fw = JSON.parse($fw)
 
-tagsFile = {"validTags"=>["!doctype", "a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bb", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "datagrid", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "eventsource", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr"], 
+tagsFile = {"validTags"=>["!doctype", "a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bb", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "comment", "datagrid", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "eventsource", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr"], 
             "voidTags"=>["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem"],
-            "aloneTags"=>["script", "style", "comment"]}
+            "aloneTags"=>["script", "style"]}
 
 $audit = []
+$commentAudit = []
 $validTags = tagsFile["validTags"]
 $voidTags = tagsFile["voidTags"]
 $aloneTags = tagsFile["aloneTags"]
 $errorLog = []
+
+class Array
+  def squeeze(t)
+    result = []
+    each do |i|
+      if i != t
+        result.push i 
+      elsif result[-1] != t
+        result.push i
+      end
+    end
+    return result
+  end
+end
 
 def validTag?(tag)
   return $validTags.include? tag
@@ -115,38 +131,13 @@ class Parser
   end
 end
 
-def standardise(raw)
-  # Turn abstracted brackets into proper valid tags
-  brackets = raw.scan(/\[(.*?)\]/m).compact
-  if !brackets.empty?
-    brackets.each { |m| raw.gsub!(m[0], m[0].delete("\n").squeeze(" ")) }
-  end
+def comments(raw)
   raw = raw.gsub("/*", ".comment {").gsub("*/", "}")
   result = []
   lines = raw.split("\n")
   lines.each do |line|
     quotes = false
-    if line.strip.start_with?("@")
-      filename = line.strip[1..-1]
-      w = line.match(/^(\s*)/)[0].to_s
-      if $fw.include?(filename)
-        f = standardise($fw[filename]).split("\n")
-        f.map! { |l| w+l.strip }
-        f = f.join("\n").strip
-      elsif filename.end_with?(".sahl")
-        f = standardise(File.open(filename, "r").read)
-      end
-      if filename.end_with?(".sahl")
-        f = convertRaw(f).split("\n")
-        f.map! { |l| w+l }
-        f = f[1..-1].join("\n")
-      elsif filename.end_with?(".css")
-        f = w+".link[rel:\"stylesheet\", type:\"text/css\", href:\"#{filename}\"]{}"
-      else
-        f = w+f
-      end
-      line = f
-    elsif line.strip.start_with?("// ")
+    if line.strip.start_with?("// ")
       line.sub!(line.strip, ".comment {#{line.strip[2..-1]} }")
     elsif line.strip.start_with?("//")
       line.sub!(line.strip, ".comment {#{line.strip[2..-1]}}")
@@ -163,6 +154,52 @@ def standardise(raw)
         end
       rescue; break; end
     end
+    result.push line
+  end
+  return result.squeeze("").join("\n")
+end
+
+def templating(raw)
+  result = []
+  lines = raw.split("\n")
+  lines.each do |line|
+    if line.strip.start_with?("@")
+      filename = line.strip[1..-1]
+      w = line.match(/^(\s*)/)[0].to_s
+      if $fw.include?(filename)
+        f = standardise($fw[filename]).split("\n")
+        f.map! { |l| w+l.strip }
+        f = f.join("\n").strip
+      elsif filename.end_with?(".sahl")
+        f = standardise(File.open(filename, "r").read)
+      end
+      if filename.end_with?(".sahl")
+        f = convertRaw(f).split("\n")
+        f.map! { |l| w+l }
+        f = f[1..-1].join("\n")
+      elsif filename.end_with?(".css")
+        f = w+".link[rel:\"stylesheet\", type:\"text/css\", href:\"#{filename}\"]{}"
+      elsif filename.end_with?(".js")
+        f = w+".script[type:\"text/javascript\", src:\"#{filename}\"]{}"
+      else
+        f = w+f
+      end
+      line = f
+    end
+    result.push line
+  end
+  return result.join("\n")
+end
+
+def standardise(raw)
+  # Turn abstracted brackets into proper valid tags
+  brackets = raw.scan(/\[(.*?)\]/m).compact
+  if !brackets.empty?
+    brackets.each { |m| raw.gsub!(m[0], m[0].delete("\n").squeeze(" ")) }
+  end
+  result = []
+  lines = raw.split("\n")
+  lines.each do |line|
     if line.strip.start_with?(".") && bracketBalance(line) == 0
       head = line.match(/(^\s*\.\w*\s*(\[.*?\]|)\s*)/)[0].to_s
       contents = line.sub(head, "")
@@ -195,19 +232,28 @@ def getBlocks(data)
   c = 0
   line = ""
   trigger = false
-  data.chars.each do |ch|
+  comment = false
+  data = data.chars
+  loop do 
+    ch = data.shift
     if ch == "{"
       trigger = true
       c += 1
     elsif ch == "}"
       c -= 1
+    elsif ch+data[0] == "/*"
+      comment = true
+    elsif ch+data[0] == "*/"
+      comment = false
+      ch += data.shift
     end
     line += ch
-    if trigger && c == 0
+    if trigger && c == 0 && !comment
       result.push line
       line = ""
       trigger = false
     end
+    break if data.empty?
   end
   return result
 end
@@ -215,9 +261,9 @@ end
 def convertFirst(tag)
   # Convert only the outermost tag
   type = tag.match(/^\s*\.(\w*)/m)[1].to_s
-  contents = tag.match(/\.#{type}(|\s*\[.*?\])\s*\{(.*)\}\s*$/m)
+  contents = tag.match(/\.#{type}(|\s*\[.*?\])\s*\{(.*)\}$/m)
   return "<#{type}>#{contents[-1]}</#{type}>" if contents[1].empty?
-  return "<#{type} #{contents[1]}>#{contents[-1]}</#{type}>"
+  return "<#{type} #{AttributeParser.new(tag).html}>#{contents[-1]}</#{type}>"
 end
 
 def convert(tag)
@@ -266,6 +312,16 @@ def convertBlock(block)
     $audit.push tag
     p.raw.sub!(tag, "&"+$audit.length.to_s)
   end
+  p.raw = templating(p.raw)
+  p.updateTags
+  p.raw = comments(p.raw)
+  p.updateTags
+  if p.tags.include?("comment")
+    tag = p.grabTag(p.raw.index(".comment"))
+    type = tag.match(/^\s*\.(\w*)/m)[1].to_s
+    $commentAudit.push tag
+    p.raw.sub!(tag, "$"+$commentAudit.length.to_s)
+  end
   loop do
     peak = p.getPeak[0]
     p.raw.gsub!(peak, convert(peak))
@@ -274,6 +330,7 @@ def convertBlock(block)
   end
   # Reapply audits after conversion
   $audit.each_with_index { |a, i| p.raw.sub!("&"+(i+1).to_s, convertFirst(a)) }
+  $commentAudit.each_with_index { |a, i| p.raw.sub!("$"+(i+1).to_s, convertFirst(a)) }
   p.raw.gsub!("<comment>", "<!--")
   p.raw.gsub!("</comment>", "-->")
   return p.raw
@@ -283,7 +340,7 @@ def convertRaw(data)
   # Take a file and convert it into html
   blocks = getBlocks(standardise(data))
   print "Parsing: " unless $silent
-  blocks.map! { |b| convertBlock(b) }
+  blocks.map! { |b| "\n"+convertBlock(b) }
   puts "\nWritten file to #{$out}" unless $silent
   blocks = blocks.join
   blocks = "\n"+blocks if !blocks.start_with?("\n")

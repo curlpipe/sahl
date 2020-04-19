@@ -4,10 +4,11 @@
 
 .h1{This is a heading}
 
-// Comment example
+// Comment example .h1{h}
 
 /*
 hello
+.h1 {HEll}
 */
 
 .h3 With all the syntax abstracted

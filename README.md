@@ -1,5 +1,6 @@
 <center> <img src="assets/logo.png" width=300> </center>
 <hr>
+
 ## Super Abstract Hypertext Language
 
 > A programmer-friendly hypertext markup language that compiles to HTML.

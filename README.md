@@ -24,11 +24,6 @@ When you have the compiler installed, you can use it like this:
 ```
 ruby sahl.rb example.sahl
 ```
-You can see the different options using this:
-```
-ruby sahl.rb -h
-```
-There are binaries available and in that case, replace `ruby sahl.rb` with `sahl`
 
 ## Examples Of HTML vs SAHL
 

@@ -1,0 +1,34 @@
+// One line comment
+
+//One line comment
+
+/*
+Two line
+comment
+*/
+
+/* Multiline
+comments
+like
+this */
+
+/*
+Completely immune to conversion
+
+.h1 {test}
+
+*/
+
+// same // here .b{yo}
+
+.h1 {Inline comments} // Like this
+
+.p {more inline comments} /* Like this */
+
+.p {Even more} /* Like
+this */
+
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] Hello // Test
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] // Test
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] {Hello} // Test
+

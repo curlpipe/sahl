@@ -1,0 +1,12 @@
+.h1{Hello world} .p{easy}
+.meta[charset: "UTF-8"]
+
+.script[defer, src="https://github.com"] {
+console.log("Hello world"); // Hello javascript
+}
+
+.style {
+  .h1 {
+    color: red;
+  }
+}

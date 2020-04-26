@@ -13,11 +13,9 @@ $void = ["area", "base", "br", "col", "embed", "hr",
         "track", "wbr", "command", "keygen", "menuitem"]
 
 def index_all(hay, needle)
-  # Find the indexes of all the needles in the haystack
-  array = []
-  inQuote = false
-  (0..hay.length).each { |x| array.push hay.index(needle, x) }
-  array = array.compact.uniq
+  r = []
+  hay.scan(needle) { |c| r.push $~.offset(0)[0] }
+  return r
 end
 
 def std(raw)

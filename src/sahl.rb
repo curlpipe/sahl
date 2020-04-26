@@ -234,6 +234,8 @@ $cdn = File.open("sahl.json", "r").read if File.file?("sahl.json")
 $cdn = JSON.parse($cdn)
 
 # Command line interface
-input = ARGV[0]
-output = input.sub(/(\.\w*)$/, ".html")
-File.open(output, "w").write(main(File.open(input, "r").read))
+if __FILE__ == $0
+  input = ARGV[0]
+  output = input.sub(/(\.\w*)$/, ".html")
+  File.open(output, "w").write(main(File.open(input, "r").read))
+end

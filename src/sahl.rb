@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The SAHL transpiler 2.0.0
+# The SAHL transpiler 2.1.0
 # Author: Luke (@curlpipe)
 # Date: April 2020
 
@@ -13,11 +13,9 @@ $void = ["area", "base", "br", "col", "embed", "hr",
         "track", "wbr", "command", "keygen", "menuitem"]
 
 def index_all(hay, needle)
-  # Find the indexes of all the needles in the haystack
-  array = []
-  inQuote = false
-  (0..hay.length).each { |x| array.push hay.index(needle, x) }
-  array = array.compact.uniq
+  r = []
+  hay.scan(needle) { |c| r.push $~.offset(0)[0] }
+  return r
 end
 
 def std(raw)
@@ -51,9 +49,7 @@ end
 
 def stdat(raw)
   tag = raw.scan(/(\[.*?\])/m)
-  tag.each do |m|
-    raw.sub!(m[0], m[0].sub(/(\s*\n\s*)/, " "))
-  end
+  tag.each { |m| raw.sub!(m[0], m[0].sub(/(\s*\n\s*)/, " ")) }
   return raw
 end
 
@@ -64,11 +60,8 @@ def grab(raw, s)
   c = 0
   contents = []
   str.chars.each do |b|
-    if b == "{"
-      controller = true
-      c += 1
-    elsif b == "}"
-      c -= 1
+    if b == "{"; controller = true; c += 1
+    elsif b == "}"; c -= 1
     end
     contents.push(b)
     break if c == 0 unless !controller
@@ -231,9 +224,7 @@ def main(raw)
       raw.sub!("&#{i}", "<!-- "+a[2..-3]+" -->")
     end
   end
-  $saudit.each_with_index do |a, i|
-    raw.sub!("£#{i}", convert(a))
-  end
+  $saudit.each_with_index { |a, i| raw.sub!("£#{i}", convert(a)) }
   return "<!DOCTYPE html>\n"+raw
 end
 
@@ -242,9 +233,7 @@ $cdn = "{\n    \"bootstrap\":\".meta[charset: \\\"utf-8\\\"]\\n.meta[name: \\\"v
 $cdn = File.open("sahl.json", "r").read if File.file?("sahl.json")
 $cdn = JSON.parse($cdn)
 
-
 # Command line interface
 input = ARGV[0]
 output = input.sub(/(\.\w*)$/, ".html")
-
 File.open(output, "w").write(main(File.open(input, "r").read))

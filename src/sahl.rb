@@ -1,5 +1,7 @@
-# The SAHL transpiler 2.0.0
-# Author: Luke Williams (@curlpipe)
+# frozen_string_literal: true
+
+# The SAHL transpiler 2.1.0
+# Author: Luke (@curlpipe)
 # Date: April 2020
 
 require 'json'
@@ -11,24 +13,9 @@ $void = ["area", "base", "br", "col", "embed", "hr",
         "track", "wbr", "command", "keygen", "menuitem"]
 
 def index_all(hay, needle)
-  # Find the indexes of all the needles in the haystack
-  array = []
-  inQuote = false
-  (0..hay.length).each { |x| array.push hay.index(needle, x) }
-  array = array.compact.uniq
-end
-
-def brackets(data)
-  # Return the net balance of the brackets
-  c = 0
-  data.chars.each do |b|
-    if b == "{"
-      c += 1
-    elsif b == "}"
-      c -= 1
-    end
-  end
-  return c
+  r = []
+  hay.scan(needle) { |c| r.push $~.offset(0)[0] }
+  return r
 end
 
 def std(raw)
@@ -62,9 +49,7 @@ end
 
 def stdat(raw)
   tag = raw.scan(/(\[.*?\])/m)
-  tag.each do |m|
-    raw.sub!(m[0], m[0].sub(/(\s*\n\s*)/, " "))
-  end
+  tag.each { |m| raw.sub!(m[0], m[0].sub(/(\s*\n\s*)/, " ")) }
   return raw
 end
 
@@ -75,11 +60,8 @@ def grab(raw, s)
   c = 0
   contents = []
   str.chars.each do |b|
-    if b == "{"
-      controller = true
-      c += 1
-    elsif b == "}"
-      c -= 1
+    if b == "{"; controller = true; c += 1
+    elsif b == "}"; c -= 1
     end
     contents.push(b)
     break if c == 0 unless !controller
@@ -89,25 +71,13 @@ end
 
 def peak(raw)
   # Find the tag on the highest level
-  tags = raw.scan(/\s*\.(\w*)\s*(\{|\[)/).map!(&:first).uniq
-  table = {}
-  tags.each do |tag|
-    subtable = {}
-    o = index_all(raw, /\.#{tag}\w*\s*(\[|\{)/)
-    next if o.nil?
-    tag = "."+tag
-    highest = 0
-    h = 0
-    o.each do |i|
-      level = brackets(raw[0..i])
-      subtable[i] = level
-    end
-    table[tag] = subtable
+  o = index_all(raw, /\.\w*\s*(\[|\{)/)
+  o.each do |tag|
+    tag = grab(raw, tag)
+    c = tag.match(/\.\w*(?:|\s*\[.*?\])\s*\{(.*?)\}/m)[1]
+    return tag if c.match(/\.\w*\{.*?\}/m).nil?
   end
-  table.each { |k, v| table[k] = v.max_by{ |k, v| v } }
-  return [raw, 0, 0] if table.values.compact.empty?
-  table = table.compact.max_by { |k, v| v[1] } 
-  return [grab(raw, table[1][0]), tags]
+  return nil
 end
 
 def attributes(raw)
@@ -243,9 +213,9 @@ def main(raw)
   i = 0
   loop do
     i = peak(raw)
-    c = convert(i[0])
-    break if i[1] == 0
-    raw.sub!(i[0], c)
+    break if i.nil?
+    c = convert(i)
+    raw.gsub!(i, c)
   end
   $caudit.each_with_index do |a, i|
     if a.strip.start_with?("//")
@@ -254,9 +224,7 @@ def main(raw)
       raw.sub!("&#{i}", "<!-- "+a[2..-3]+" -->")
     end
   end
-  $saudit.each_with_index do |a, i|
-    raw.sub!("£#{i}", convert(a))
-  end
+  $saudit.each_with_index { |a, i| raw.sub!("£#{i}", convert(a)) }
   return "<!DOCTYPE html>\n"+raw
 end
 
@@ -266,7 +234,8 @@ $cdn = File.open("sahl.json", "r").read if File.file?("sahl.json")
 $cdn = JSON.parse($cdn)
 
 # Command line interface
-input = ARGV[0]
-output = input.sub(/(\.\w*)$/, ".html")
-File.open(output, "w").write(main(File.open(input, "r").read))
-
+if __FILE__ == $0
+  input = ARGV[0]
+  output = input.sub(/(\.\w*)$/, ".html")
+  File.open(output, "w").write(main(File.open(input, "r").read))
+end

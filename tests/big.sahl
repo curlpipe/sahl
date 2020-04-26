@@ -1,0 +1,154 @@
+.h1{Hello world} .p{easy}
+.meta[charset: "UTF-8"]
+
+.script[defer, src="https://github.com"] {
+console.log("Hello world"); // Hello javascript
+}
+
+.style {
+  .h1 {
+    color: red;
+  }
+}
+
+.p {Hello world}
+.p{Hello world}
+.h1 {This is a heading. Amazing.}
+.p{123456789} 
+.p {rrs,tsds/atur7t7/6rt890s7d6543tra67s8t9*^%&(*_&%$:^£*&()&^%$£)*&^%$.£@~@~@OS{+}@?><IEUL*^&%PG^JLUY;WUL}
+
+.p {hello .b{world}}
+.p {.b{world} our}
+.p {our .b{world} our}
+.p {our .b{world} our .i{earth}}
+.p {our .b{world} our .i{earth} hello}
+
+.p[class="test"]{hello .b{world}}
+.p[class="demo"] {.b{world} our}
+.p[style="color: red;"]{ our .b{world} our}
+.p[style: "color: red;"] {our .b{world} our .i{earth} }
+.p[aria-expand:"false"]{ our .b{world} our .i{earth} hello }
+
+
+
+.p Hello world
+.p 123456789
+.p rastenhrafyluttrs,tsdsatur7t76rt/890s7/d6543tra67s8t9*^%&(*_&%$:^£*&()&^%$£)*&^%$.£@~@~@OS{+}@?><IEUL*^&%PG^JLUY;WUL
+.h1 This is a heading. Amazing.
+
+.p hello .b{world}
+.p .b{world} our
+.p our .b{world} our
+.p our .b{world} our .i{earth}
+.p our .b{world} our .i{earth} hello
+
+.p[class="test"] hello .b{world}
+.p[class="demo"] .b{world} our
+.p[style="color: red;"] our .b{world} our
+.p[style: "color: red;"] our .b{world} our .i{earth}
+.p[aria-expand:"false"] our .b{world} our .i{earth} hello
+
+.a[src="ya"]
+
+.p {
+  Hello world
+}
+
+
+.p {
+  Hello world
+  .p {
+    Hello world
+    .p {
+      Hello world
+      .p {
+        Hello .b{world}
+      }
+    }
+  }
+  .h1 Test
+}
+
+// One line comment
+
+//One line comment
+
+/*
+Two line
+comment
+*/
+
+/* Multiline
+comments
+like
+this */
+
+/*
+Completely immune to conversion
+
+.h1 {test}
+
+*/
+
+// same // here .b{yo}
+
+.h1 {Inline comments} // Like this
+
+.p {more inline comments} /* Like this */
+
+.p {Even more} /* Like
+this */
+
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] Hello // Test
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] // Test
+.a[src="https://github.com/curlpipe/vim-sahl /* Hello */"] {Hello} // Test
+
+.h1[src="https://github.com/curlpipe/vim-sahl/a.png", 
+     width="200"] {Hello world}
+
+.h1[src="https://github.com/curlpipe/vim-sahl/a.png", 
+     width="200"] {
+     Hello world
+}
+
+.h1[src="https://github.com/curlpipe/vim-sahl/a.png", 
+     width="200"] Hello world
+
+.h1[src="https://github.com/curlpipe/vim-sahl/a.png", 
+     width="200"] {Hello world .b{yeah man}}
+
+.h1[src="https://github.com/curlpipe/vim-sahl/a.png", 
+     width="200"] Hello world .b{yeah man}
+
+.nav[class: "navbar is-dark is-spaced", role: "navigation", aria-label: "main navigation"] {
+  .div[class: "navbar-brand"] {
+    .a[class: "navbar-item", href: "https://peacock.link"] {
+      .img[class: "pe", src: "assets/logo.png", width: "28", height: "28"]
+      .h1[class: "is-text-light brand"] Peacock
+    }
+    .a[role: "button", class: "navbar-burger", data-target: "navmenu", aria-label: "menu", aria-expanded: "false"] {
+      .span[aria-hidden: "true"]
+      .span[aria-hidden: "true"]
+      .span[aria-hidden: "true"]
+    }
+  }
+  .div[class: "navbar-menu", id: "navmenu"] {
+    .a[class: "navbar-item", href: "index.html"] Home    
+    .a[class: "navbar-item", href: "index.html"] About
+    .a[class: "navbar-item", href: "index.html"] Download
+  }
+}
+
+.h1{Hello world} .p{easy}
+
+@bulma
+@bootstrap
+@fontawesome
+@jquery
+@opensans
+
+.h1 Start
+
+@multiline.sahl
+
+.h1 End

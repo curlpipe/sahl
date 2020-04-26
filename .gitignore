@@ -1,3 +1,5 @@
 sahl
 src/glitch*
 src/*.html
+*.todo
+tests/testdump

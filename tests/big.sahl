@@ -141,8 +141,11 @@ this */
 
 .h1{Hello world} .p{easy}
 
-@bulma
-@bootstrap
+.head {
+  @bulma
+  @bootstrap
+}
+
 @fontawesome
 @jquery
 @opensans

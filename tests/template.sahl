@@ -1,5 +1,8 @@
-@bulma
-@bootstrap
+.head {
+  @bulma
+  @bootstrap
+}
+
 @fontawesome
 @jquery
 @opensans

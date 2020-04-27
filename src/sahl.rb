@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The SAHL transpiler 2.1.0
+# The SAHL transpiler 2.1.1
 # Author: Luke (@curlpipe)
 # Date: April 2020
 
@@ -165,7 +165,7 @@ def templating(raw)
       file = l.strip[1..-1]
       w = l.match(/(\s*)@/)[1].to_s
       if $cdn.include?(file)
-        result.push $cdn[file]
+        result.push $cdn[file].split("\n").map{ |i| w+i }.join("\n")
         next
       end
       if file.end_with? ".css"

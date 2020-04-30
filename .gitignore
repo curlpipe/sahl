@@ -3,3 +3,10 @@ src/glitch*
 src/*.html
 *.todo
 tests/testdump
+tests/abandon.html
+tests/basic.html
+tests/comments.html
+tests/dropped.html
+tests/multiline.html
+tests/template.html
+

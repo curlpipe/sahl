@@ -174,10 +174,12 @@ def templating(raw)
       elsif file.end_with? ".js"
         l = w+".script[type:\"text/javascript\", src:\"#{file}\"]"
         result.push l
-      else
+      elsif File.file? file
         l = File.open(file, "r").readlines.map{ |i| w+i }.join
         l = templating(l) if file.end_with? ".sahl"
         l = l[0..-2] if l.end_with? "\n"
+        result.push l
+      else 
         result.push l
       end
     else
